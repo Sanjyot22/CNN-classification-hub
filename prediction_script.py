@@ -1,6 +1,6 @@
 # import the dependencies or libraries
-from createKerasModelArchitectures import kerasModels
-from keras.models import Model, load_model
+from create_keras_model_architectures import kerasModels
+from tensorflow.keras.models import Model, load_model
 from PIL import Image, ImageOps
 import pandas as pd
 from tqdm import tqdm

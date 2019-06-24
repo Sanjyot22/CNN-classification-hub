@@ -1,11 +1,11 @@
 import tensorflow as tf
-import keras
+import tensorflow.keras as keras
 
 class customModels():
     """
     Class used to create custom cnn-architecture.
     """
-    
+
     def micro_cnn_net(self, nclasses, img_width_=84, img_height_=84):
         """
         micro_cnn_net creates a two layer cnn architecture for classification.

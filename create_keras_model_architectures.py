@@ -1,8 +1,7 @@
-# Import keras Libraries\
 from custom_model_arhitectures import customModels
-from keras.layers import Dropout, Flatten, Dense
-from keras.models import Sequential, Model
-from keras import applications
+from tensorflow.keras.layers import Dropout, Flatten, Dense
+from tensorflow.keras.models import Sequential, Model
+from tensorflow.keras import applications
 
 class kerasModels():
     """
@@ -32,7 +31,6 @@ class kerasModels():
         Return:
             model_name_for_call {str} -- name of the function that creates the specified model name.
         """
-
         # initializing the parameters
         model_name_for_call = "invalid"
 
@@ -92,7 +90,6 @@ class kerasModels():
             # model creation call
             model_call = getattr(self, model_name_for_call)
             model , img_width, img_height = model_call()
-            model.layers.pop()
             # check if number_of_layers_to_freeze is more than model layers
             if number_of_layers_to_freeze > len(model.layers): number_of_layers_to_freeze = len(model.layers)
             # freeze model layers
@@ -107,7 +104,6 @@ class kerasModels():
             model_call = getattr(self, model_name_for_call)
             model , img_width, img_height = model_call()
             # set all layers to trainable
-            model.layers.pop()
             for layer in model.layers:
                 layer.trainable = True
         else:
@@ -116,7 +112,6 @@ class kerasModels():
             model_call = getattr(self, model_name_for_call)
             model , img_width, img_height = model_call()
             # set all layers to non-trainable
-            model.layers.pop()
             for layer in model.layers:
                 layer.trainable = False
 
@@ -131,149 +126,197 @@ class kerasModels():
 
         # merge the stacked layers with pre-trained model
         model_final = Model(inputs=model.input, outputs=top_model(model.output))
-        return model_final , img_height ,img_width
+        return model_final, img_height, img_width
 
-    def ResNet50_(self):
+    def ResNet50_(self, img_width=224, img_height=224):
         """
         This function generates model resnet-50 architecture from keras application.
+
+        Arguments:
+            img_width {int} -- input height of the image.
+            img_height {int} -- input width of the image.
+            if height & width not mentioned default are considered
 
         Return:
             model_final {keras-model} -- resnet-50 architecture.
             img_height {int} -- input height of the image as per resnet-50.
             img_width {int} -- input width of the image as per resnet-50.
         """
-        img_width, img_height = 224, 224
         return  applications.resnet50.ResNet50(weights="imagenet", include_top=False, input_shape=(img_width, img_height, 3)) , img_width, img_height
 
-    def Xception_(self):
+    def Xception_(self, img_width=299, img_height=299):
         """
         This function generates model xception architecture from keras application.
+
+        Arguments:
+            img_width {int} -- input height of the image.
+            img_height {int} -- input width of the image.
+            if height & width not mentioned default are considered
 
         Return:
             model_final {keras-model} -- xception architecture.
             img_height {int} -- input height of the image as per xception.
             img_width {int} -- input width of the image as per xception.
         """
-        img_width, img_height = 299, 299
         return applications.xception.Xception(weights="imagenet", include_top=False, input_shape=(img_width, img_height, 3)) , img_width, img_height
 
-    def VGG16_(self):
+    def VGG16_(self, img_width=224, img_height=224):
         """
         This function generates model vgg-16 architecture from keras application.
+
+        Arguments:
+            img_width {int} -- input height of the image.
+            img_height {int} -- input width of the image.
+            if height & width not mentioned default are considered
 
         Return:
             model_final {keras-model} -- vgg-16 architecture.
             img_height {int} -- input height of the image as per vgg-16.
             img_width {int} -- input width of the image as per vgg-16.
         """
-        img_width, img_height = 224, 224
         return applications.vgg16.VGG16(weights="imagenet", include_top=False, input_shape=(img_width, img_height, 3)) , img_width, img_height
 
-    def VGG19_(self):
+    def VGG19_(self, img_width=224, img_height=224):
         """
         This function generates model vgg-16 architecture from keras application.
+
+        Arguments:
+            img_width {int} -- input height of the image.
+            img_height {int} -- input width of the image.
+            if height & width not mentioned default are considered
 
         Return:
             model_final {keras-model} -- vgg-19 architecture.
             img_height {int} -- input height of the image as per vgg-19.
             img_width {int} -- input width of the image as per vgg-19.
         """
-        img_width, img_height = 224, 224
         return applications.vgg19.VGG19(weights="imagenet", include_top=False, input_shape=(img_width, img_height, 3)) , img_width, img_height
 
-    def InceptionV3_(self):
+    def InceptionV3_(self, img_width=299, img_height=299):
         """
         This function generates model inception-v3 architecture from keras application.
+
+        Arguments:
+            img_width {int} -- input height of the image.
+            img_height {int} -- input width of the image.
+            if height & width not mentioned default are considered
 
         Return:
             model_final {keras-model} -- inception-v3 architecture.
             img_height {int} -- input height of the image as per inception-v3.
             img_width {int} -- input width of the image as per inception-v3.
         """
-        img_width, img_height = 299, 299
         return applications.inception_v3.InceptionV3(weights = "imagenet", include_top=False, input_shape = (img_width, img_height, 3)) , img_width, img_height
 
-    def InceptionResNetV2_(self):
+    def InceptionResNetV2_(self, img_width=299, img_height=299):
         """
         This function generates model inception-resnet-v2 architecture from keras application.
+
+        Arguments:
+            img_width {int} -- input height of the image.
+            img_height {int} -- input width of the image.
+            if height & width not mentioned default are considered
 
         Return:
             model_final {keras-model} -- inception-resnet-v2 architecture.
             img_height {int} -- input height of the image as per inception-resnet-v2.
             img_width {int} -- input width of the image as per inception-resnet-v2.
         """
-        img_width, img_height = 299, 299
         return applications.inception_resnet_v2.InceptionResNetV2(weights="imagenet", include_top=False, input_shape=(img_width, img_height, 3)) , img_width, img_height
 
-    def NASNetLarge_(self):
+    def NASNetLarge_(self, img_width=331, img_height=331):
         """
         This function generates model nasnet architecture from keras application.
+
+        Arguments:
+            img_width {int} -- input height of the image.
+            img_height {int} -- input width of the image.
+            if height & width not mentioned default are considered
 
         Return:
             model_final {keras-model} -- nasnet-large architecture.
             img_height {int} -- input height of the image as per nasnet-largenasnet-large.
             img_width {int} -- input width of the image as per nasnet-large.
         """
-        img_width, img_height = 331, 331
         return applications.nasnet.NASNetLarge(weights="imagenet", include_top=False, input_shape=(img_width, img_height, 3)) , img_width, img_height
 
-    def NASNetsmall_(self):
+    def NASNetsmall_(self, img_width=224, img_height=224):
         """
         This function generates model nasnet-small architecture from keras application.
+
+        Arguments:
+            img_width {int} -- input height of the image.
+            img_height {int} -- input width of the image.
+            if height & width not mentioned default are considered
 
         Return:
             model_final {keras-model} -- nasnet-small architecture.
             img_height {int} -- input height of the image as per nasnet-small.
             img_width {int} -- input width of the image as per nasnet-small.
         """
-        img_width, img_height = 224, 224
         return applications.nasnet.NASNetMobile(weights="imagenet", include_top=False, input_shape=(img_width, img_height, 3)) , img_width, img_height
 
-    def DenseNet121_(self):
+    def DenseNet121_(self, img_width=224, img_height=224):
         """
         This function generates model densenet-121 architecture from keras application.
+
+        Arguments:
+            img_width {int} -- input height of the image.
+            img_height {int} -- input width of the image.
+            if height & width not mentioned default are considered
 
         Return:
             model_final {keras-model} -- densenet-121 architecture.
             img_height {int} -- input height of the image as per densenet-121.
             img_width {int} -- input width of the image as per densenet-121.
         """
-        img_width, img_height = 224, 224
         return applications.densenet.DenseNet121(weights="imagenet", include_top=False, input_shape=(img_width, img_height, 3)) , img_width, img_height
 
-    def DenseNet201_(self):
+    def DenseNet201_(self, img_width=224, img_height=224):
         """
         This function generates model densenet-201 architecture from keras application.
+
+        Arguments:
+            img_width {int} -- input height of the image.
+            img_height {int} -- input width of the image.
+            if height & width not mentioned default are considered
 
         Return:
             model_final {keras-model} -- densenet-201 architecture.
             img_height {int} -- input height of the image as per densenet-201.
             img_width {int} -- input width of the image as per densenet-201.
         """
-        img_width, img_height = 224, 224
         return applications.densenet.DenseNet201(weights="imagenet", include_top=False, input_shape=(img_width, img_height, 3)) , img_width, img_height
 
-    def DenseNet169_(self):
+    def DenseNet169_(self, img_width=224, img_height=224):
         """
         This function generates model densenet-169 architecture from keras application.
+
+        Arguments:
+            img_width {int} -- input height of the image.
+            img_height {int} -- input width of the image.
+            if height & width not mentioned default are considered
 
         Return:
             model_final {keras-model} -- densenet-169 architecture.
             img_height {int} -- input height of the image as per densenet-169.
             img_width {int} -- input width of the image as per densenet-169.
         """
-        img_width, img_height = 224, 224
         return applications.densenet.DenseNet169(weights="imagenet", include_top=False, input_shape=(img_width, img_height, 3)) , img_width, img_height
 
-    def MobileNet_(self):
+    def MobileNet_(self, img_width=224, img_height=224):
         """
         This function generates model mobilenet architecture from keras application.
+
+        Arguments:
+            img_width {int} -- input height of the image.
+            img_height {int} -- input width of the image.
+            if height & width not mentioned default are considered
 
         Return:
             model_final {keras-model} -- mobilenet architecture.
             img_height {int} -- input height of the image as per mobilenet.
             img_width {int} -- input width of the image as per mobilenet.
         """
-        img_width, img_height = 224, 224
         return applications.mobilenet.MobileNet(weights="imagenet", include_top=False, input_shape=(img_width, img_height, 3)) , img_width, img_height
 

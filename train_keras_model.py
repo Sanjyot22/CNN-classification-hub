@@ -1,10 +1,11 @@
 # Import keras Libraries
-from keras.callbacks import CSVLogger, TensorBoard, EarlyStopping,LearningRateScheduler
-from keras.preprocessing.image import ImageDataGenerator
-from keras.callbacks import Callback
-from keras.models import  load_model
-from keras import applications
-from keras import optimizers
+from tensorflow.keras.callbacks import CSVLogger, TensorBoard, EarlyStopping,LearningRateScheduler
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
+from tensorflow.keras.callbacks import Callback
+from tensorflow.keras.models import  load_model
+from tensorflow.keras import applications
+from tensorflow.keras import optimizers
+
 from time import time
 import pandas as pd
 import json
@@ -16,16 +17,47 @@ import shutil
 from glob import glob
 
 #Import user-defined Libraries
-from createKerasModelArchitectures import kerasModels
-from predictionScript import do_predictions
+from create_keras_model_architectures import kerasModels
+from prediction_script import do_predictions
 
 class kerasModelTraining():
+    """
+    This class is used to initiate model training as per parameters mentioned in config file.
+    """
 
     def __init__(self,data_dir_train,data_dir_valid,batch_size,epochs,model_name,training_type,save_loc,weights,clear):
+        """
+        Constructor to define parameters for model training and clear the logs, if specified.
 
-        print("Object of class kerasModelTraining is created")
+        Arguments:
+            data_dir_train {str} -- path to training folder.
+            data_dir_valid {str} -- path to validation folder.
+            save_loc {str} -- path to save model logs and weights.
+            batch_size {int} -- image batch size during model training.
+            epochs {int} -- number of epochs the model should train on the data.
+            model_name {str} -- name of the model to train.
+            training_type {str} -- type of train, as described in config file.
+            weights {str} -- whether to pick image-net weights
+            clear {boolean} -- whether to clear earlier model training logs and weights.
+        """
 
-        # 2. Remove unwanted folders
+
+        # assign all the model training parameters as per config file
+        self.TRAIN_DIR = data_dir_train
+        self.VALID_DIR = data_dir_valid
+        self.SAVE_LOC = save_loc
+        self.BATCHSIZE = batch_size
+        self.EPOCHS = epochs
+        self.MODEL_NAME = model_name
+        self.TRAINING_TYPE = training_type
+        self.WEIGHTS = weights
+
+        # check the paths are valid
+        if not os.path.exists(self.TRAIN_DIR) : print ("Invalid training path");sys.exit();
+        if not os.path.exists(self.VALID_DIR) : print ("Invalid validation path");sys.exit();
+        if not os.path.exists(self.SAVE_LOC) : print ("Invalid save location");sys.exit();
+
+        # Remove unwanted folders in mac
         remove_unwanted_folders = "find . -name '.DS_Store' -type f -delete"
         os.system(remove_unwanted_folders)
         remove_unwanted_folders = "find {} -name '.DS_Store' -type f -delete".format(data_dir_train)
@@ -33,26 +65,91 @@ class kerasModelTraining():
         remove_unwanted_folders = "find {} -name '.DS_Store' -type f -delete".format(data_dir_valid)
         os.system(remove_unwanted_folders)
 
-
-        self.TRAIN_DIR = data_dir_train
-        self.VALID_DIR = data_dir_valid
-        self.BATCHSIZE = batch_size
-        self.EPOCHS = epochs
-        self.MODEL_NAME = model_name
-        self.TRAINING_TYPE = training_type
-        self.SAVE_LOC = save_loc
-        self.WEIGHTS = weights
+        # derive other required model training parameters
+        # NOTE: It is very important that training and validation folder has only folders with name of the category
+        #       class. And no extra folders/files. Names of each class folder in training and validation must be same.
         self.NUMBER_OF_CLASSES = len(os.listdir(data_dir_train))
         self.TRAIN_SAMPLES = sum([len(files) for r, d, files in os.walk(data_dir_train)])
         self.VALIDATION_SAMPLES = sum([len(files) for r, d, files in os.walk(data_dir_train)])
 
-        self.keras_models = ['xception', 'vgg16', 'vgg19', 'resnet50', 'inceptionv3', 'inceptionresnetv2', 'nasnet_small','nasnet_large',
-                        'densenet121', 'densenet169', 'densenet201', 'mobilenet', 'micro_exp_net']
-        self.keras_contrib_models = ['wideresnet', 'ror']
-        self.other = ['resnet101', 'resnet152']
+        # list of all the model architecture available in keras applications
+        self.keras_models = [
+            'xception', 'vgg16', 'vgg19', 'resnet50', 'inceptionv3', 'inceptionresnetv2', 'nasnet_small','nasnet_large',
+            'densenet121', 'densenet169', 'densenet201', 'mobilenet', 'micro_exp_net'
+        ]
 
-        if clear == "True":
-            self.clear_logs(self.MODEL_NAME)
+        # clears the earlier model training logs
+        if str(clear) == "True":
+            self.__clear_logs__(self.MODEL_NAME)
+
+
+    def __clear_logs__(self,model_name):
+        """
+        This function delete model logs and weights.
+
+        Arguments:
+            model_name {str} -- name of the model whose logs and weights are to be deleted.
+        """
+        # preserve model initialization wights
+        if self.WEIGHTS != "imagenet":
+            weights_name = self.WEIGHTS.split("/")[-1]
+            os.system("cp {0} /tmp/{1}".format(self.WEIGHTS,weights_name))
+
+        # delete all the model logs as per model name
+        model_log_folder = os.path.join(self.SAVE_LOC,'model_repository/'+model_name+'/model_logs/')
+        if os.path.exists(model_log_folder):
+            shutil.rmtree(model_log_folder)
+            os.makedirs(model_log_folder)
+
+        # delete all the tensorboard logs as per model name
+        tensor_log_folder = os.path.join(self.SAVE_LOC, 'model_repository/'+model_name+'/tensor_logs/')
+        if os.path.exists(tensor_log_folder):
+            shutil.rmtree(tensor_log_folder)
+
+        # restore model initialization wights
+        if self.WEIGHTS != "imagenet":
+            weights_name = self.WEIGHTS.split("/")[-1]
+            os.system("cp /tmp/{0} {1}".format(weights_name,self.WEIGHTS))
+
+
+    def __create_log_folders__(self,model_name):
+        """
+        This function creates model logs folders.
+
+        Arguments:
+            model_name {str} -- name of the model whose logs and weights are to be saved.
+        """
+
+        # create folder to save model logs as per model name
+        model_log_folder = os.path.join(self.SAVE_LOC,'model_repository/'+model_name+'/model_logs/')
+        if not os.path.exists(model_log_folder):
+            os.makedirs(model_log_folder)
+
+        # create folder to save tensorboard logs as per model name
+        tensor_log_folder = os.path.join(self.SAVE_LOC, 'model_repository/'+model_name+'/tensor_logs/')
+        if not os.path.exists(tensor_log_folder):
+            os.makedirs(tensor_log_folder)
+
+    def load_model_arhitecture(self):
+
+        # Model arhitecture
+        print("Number of classes is {}".format(self.NUMBER_OF_CLASSES))
+        modelCreator = kerasModels(self.MODEL_NAME, self.TRAINING_TYPE, self.NUMBER_OF_CLASSES)
+
+        if (self.MODEL_NAME in self.keras_models):
+            model_final, img_width, img_height = modelCreator.create_model_base()
+        else:
+            print("Please specify the model name from the available list")
+            print(self.keras_models)
+            sys.exit()
+
+        if self.WEIGHTS != "imagenet":
+            model_final = load_model(self.WEIGHTS)
+        model_final.summary()
+        print("Model has {} layers".format(len(model_final.layers)))
+
+        return model_final, img_width, img_height
+
 
     def prepare_data(self,img_height, img_width):
 
@@ -75,35 +172,6 @@ class kerasModelTraining():
 
         return train_generator , validation_generator
 
-    def clear_logs(self,model_name):
-
-        dir_path = os.path.realpath(os.path.dirname(__file__))
-
-        if self.WEIGHTS != "imagenet":
-            weights_name = self.WEIGHTS.split("/")[-1]
-            os.system("cp {0} /tmp/{1}".format(self.WEIGHTS,weights_name))
-
-
-        if  os.path.exists(dir_path + '/model_repository/'+model_name+'/model_logs/'):
-            shutil.rmtree(dir_path + '/model_repository/'+model_name+'/model_logs/')
-            os.makedirs(dir_path + '/model_repository/'+model_name+'/model_logs/')
-
-        if os.path.exists(dir_path + '/model_repository/'+model_name+'/tensor_logs/'):
-            shutil.rmtree(dir_path + '/model_repository/'+model_name+'/tensor_logs/')
-
-        if self.WEIGHTS != "imagenet":
-            weights_name = self.WEIGHTS.split("/")[-1]
-            os.system("cp /tmp/{0} {1}".format(weights_name,self.WEIGHTS))
-
-    def create_log_folders(self,model_name):
-
-        dir_path = os.path.realpath(os.path.dirname(__file__))
-
-        if not os.path.exists(dir_path + '/model_repository/'+model_name+'/model_logs/'):
-            os.makedirs(dir_path + '/model_repository/'+model_name+'/model_logs/')
-
-        if not os.path.exists(dir_path + '/model_repository/'+model_name+'/tensor_logs/'):
-            os.makedirs(dir_path + '/model_repository/'+model_name+'/tensor_logs/')
 
     def identify_best_validation_weights(self,log_file,how_many):
         training_logs = pd.read_csv(log_file)
@@ -111,26 +179,6 @@ class kerasModelTraining():
         list_of_weights = best_weights["model_path"].tolist()
         return list_of_weights
 
-    def load_model_arhitecture(self):
-        # Model arhitecture
-        print("Number of classes is {}".format(self.NUMBER_OF_CLASSES))
-        modelCreator = kerasModels(self.MODEL_NAME, self.TRAINING_TYPE, self.NUMBER_OF_CLASSES)
-
-        if (self.MODEL_NAME in self.keras_models):
-            model_final, img_width, img_height = modelCreator.createModelBase()
-            # sys.exit()
-
-        else:
-            print("Please specify the model name from the available list")
-            print(self.keras_models)
-            sys.exit()
-
-        if self.WEIGHTS != "imagenet":
-            model_final = load_model(self.WEIGHTS)
-        print(model_final.summary())
-        print("Model has {} layers".format(len(model_final.layers)))
-
-        return model_final, img_width, img_height
 
     def save_final_model_data(self,final_model,generator_for_index_map):
         dir_path = os.path.realpath(os.path.dirname(__file__))
@@ -171,60 +219,60 @@ class kerasModelTraining():
         return path_to_weights_folder
 
     def train(self):
-
-        # Crete required Folder structure
-        dir_path = os.path.realpath(os.path.dirname(__file__))
-        self.create_log_folders(self.MODEL_NAME)
+        """
+        Train function initiates the model training by creating model, preparing data and compiling-evaluating the model.
+        """
+        # Create required folder structure
+        self.__create_log_folders__(self.MODEL_NAME)
 
         # Constructing model architecture
         model_final, img_width, img_height = self.load_model_arhitecture()
 
-        # Model parameters definitions
+        # # Model parameters definitions
         model_final.compile(loss="categorical_crossentropy", optimizer=optimizers.SGD(lr=0.001, momentum=0.9),metrics=["accuracy"])
 
-        #training generator creation - data prep
-        train_generator, validation_generator = self.prepare_data(img_height= img_height,img_width=img_width)
-
-        # Call back after every_epochs
-        early_stopping = EarlyStopping(monitor='val_acc', min_delta=0, patience=8, verbose=1, mode='auto',restore_best_weights=True)
-        csv_logger = CSVLogger(os.path.join(dir_path,"model_repository","training.log"))
-        # tbCallBack = TensorBoard(log_dir=dir_path + '/model_repository/'+self.MODEL_NAME+'/tensor_logs/' + '/{0}'.format(time()))
-        # learning rate schedule
-        def step_decay(EPOCH):
-            initial_lrate = 0.001
-            drop = 0.1
-            epochs_drop = 10.0
-            lrate = initial_lrate * math.pow(drop, math.floor((1 + EPOCH) / epochs_drop))
-            print("\n==== Epoch: {0:} and Learning Rate: {1:} ====".format(EPOCH, lrate))
-            return lrate
-        change_lr = LearningRateScheduler(step_decay)
-
-
-        # class_weight = { 0:2, 1:4, 2:5, 3:1, 4:1, 5:1, 6:1}
-        print ("\nStarted Model training..\n")
-        # Model training
-        validation_steps =  (self.VALIDATION_SAMPLES//self.BATCHSIZE)
-        model_final.fit_generator(
-
-            train_generator,
-            steps_per_epoch=self.TRAIN_SAMPLES//self.BATCHSIZE,
-            epochs=self.EPOCHS,verbose=1,
-            validation_data=validation_generator,
-            validation_steps=validation_steps,
-            callbacks=[early_stopping,csv_logger, change_lr,
-                       WeightsSaver(model_final, img_height, img_width,self.VALID_DIR,self.MODEL_NAME)]
-        )
-
-
-        self.save_final_model_data(model_final,validation_generator)
-
-        # Cleaning
-        del model_final
-        if os.path.exists(os.path.join(dir_path,"model_repository","training.log")):
-            os.remove(os.path.join(dir_path,"model_repository","training.log"))
-        print ("Model Training complete !\n")
-
-        return self.find_best_weights_from_all_epochs(img_height,img_width)
+        # #training generator creation - data prep
+        # train_generator, validation_generator = self.prepare_data(img_height= img_height,img_width=img_width)
+        #
+        # # Call back after every_epochs
+        # early_stopping = EarlyStopping(monitor='val_acc', min_delta=0, patience=8, verbose=1, mode='auto',restore_best_weights=True)
+        # csv_logger = CSVLogger(os.path.join(dir_path,"model_repository","training.log"))
+        # # tbCallBack = TensorBoard(log_dir=dir_path + '/model_repository/'+self.MODEL_NAME+'/tensor_logs/' + '/{0}'.format(time()))
+        #
+        # # learning rate schedule
+        # def step_decay(EPOCH):
+        #     initial_lrate = 0.001
+        #     drop = 0.1
+        #     epochs_drop = 10.0
+        #     lrate = initial_lrate * math.pow(drop, math.floor((1 + EPOCH) / epochs_drop))
+        #     print("\n==== Epoch: {0:} and Learning Rate: {1:} ====".format(EPOCH, lrate))
+        #     return lrate
+        # change_lr = LearningRateScheduler(step_decay)
+        #
+        #
+        # # class_weight = { 0:2, 1:4, 2:5, 3:1, 4:1, 5:1, 6:1}
+        # print ("\nStarted Model training..\n")
+        # # Model training
+        # validation_steps =  (self.VALIDATION_SAMPLES//self.BATCHSIZE)
+        # model_final.fit_generator(
+        #
+        #     train_generator,
+        #     steps_per_epoch=self.TRAIN_SAMPLES//self.BATCHSIZE,
+        #     epochs=self.EPOCHS,verbose=1,
+        #     validation_data=validation_generator,
+        #     validation_steps=validation_steps,
+        #     callbacks=[early_stopping,csv_logger, change_lr,
+        #                WeightsSaver(model_final, img_height, img_width,self.VALID_DIR,self.MODEL_NAME)]
+        # )
+        # self.save_final_model_data(model_final,validation_generator)
+        #
+        # # Cleaning
+        # del model_final
+        # if os.path.exists(os.path.join(dir_path,"model_repository","training.log")):
+        #     os.remove(os.path.join(dir_path,"model_repository","training.log"))
+        # print ("Model Training complete !\n")
+        #
+        # return self.find_best_weights_from_all_epochs(img_height,img_width)
 
 
 class WeightsSaver(Callback):
