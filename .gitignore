@@ -23,8 +23,8 @@
 
 
 # ignore data folder
-weights/**
-**/weights
+model_repository/**
+**/model_repository
 
 datasets/**
 **/datasets

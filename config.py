@@ -12,12 +12,12 @@ keras_models= ['xception', 'vgg16', 'vgg19', 'resnet50', 'inceptionv3',
 
 
 # path to training and validation directory
-TRAIN_DIR = "./data/training_data" # path to training directory. Classes wise folders of images
-VALID_DIR = "./data/validation_data" # path to validation directory. Classes wise folders of images
+TRAIN_DIR = "/Users/sanjyotzade/Documents/datasets/sample_training_images/training_data" # path to training directory. Classes wise folders of images
+VALID_DIR = "/Users/sanjyotzade/Documents/datasets/sample_training_images/testing_data" # path to validation directory. Classes wise folders of images
 
 # Initializing model parameters
 MODEL_NAME = "resnet50" # specify the model name from above list
-EPOCHS = 100   # number of epochs to train
+EPOCHS = 3   # number of epochs to train
 BATCH_SIZE = 32 # batch size of training
 CLEAR_LOGS = True # if True will clear model training logs & weights from the folder
 # Note: if re-starting model training the make sure that earlier weights are preserved by keeping "CLEAR_LOGS=False"

@@ -1,5 +1,6 @@
 # Import keras Libraries
-from tensorflow.keras.callbacks import CSVLogger, TensorBoard, EarlyStopping,LearningRateScheduler
+from tensorflow.keras.callbacks import CSVLogger, TensorBoard, EarlyStopping
+from tensorflow.keras.callbacks import ModelCheckpoint, LearningRateScheduler
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.callbacks import Callback
 from tensorflow.keras.models import  load_model
@@ -15,6 +16,8 @@ import sys
 import os, math
 import shutil
 from glob import glob
+import matplotlib.pyplot as plt
+
 
 #Import user-defined Libraries
 from create_keras_model_architectures import kerasModels
@@ -82,6 +85,8 @@ class kerasModelTraining():
         if str(clear) == "True":
             self.__clear_logs__(self.MODEL_NAME)
 
+        # define model to be created
+        self.model_final = ""
 
     def __clear_logs__(self,model_name):
         """
@@ -110,7 +115,7 @@ class kerasModelTraining():
         if self.WEIGHTS != "imagenet":
             weights_name = self.WEIGHTS.split("/")[-1]
             os.system("cp /tmp/{0} {1}".format(weights_name,self.WEIGHTS))
-
+        return
 
     def __create_log_folders__(self,model_name):
         """
@@ -130,12 +135,21 @@ class kerasModelTraining():
         if not os.path.exists(tensor_log_folder):
             os.makedirs(tensor_log_folder)
 
-    def load_model_arhitecture(self):
+        return
 
-        # Model arhitecture
+    def __load_model_arhitecture__(self):
+        """
+        This function loads the specified model architecture.
+
+        return:
+            model_final {keras-model} -- generated keras as per parameters in config.
+            img_width {int} -- input width of the image
+            img_height {int} -- input height of the image
+        """
         print("Number of classes is {}".format(self.NUMBER_OF_CLASSES))
-        modelCreator = kerasModels(self.MODEL_NAME, self.TRAINING_TYPE, self.NUMBER_OF_CLASSES)
 
+        # getting the model architecture
+        modelCreator = kerasModels(self.MODEL_NAME, self.TRAINING_TYPE, self.NUMBER_OF_CLASSES)
         if (self.MODEL_NAME in self.keras_models):
             model_final, img_width, img_height = modelCreator.create_model_base()
         else:
@@ -143,42 +157,155 @@ class kerasModelTraining():
             print(self.keras_models)
             sys.exit()
 
+        # for training to re-start
+        # loading the weights from earlier iteration
         if self.WEIGHTS != "imagenet":
             model_final = load_model(self.WEIGHTS)
-        model_final.summary()
-        print("Model has {} layers".format(len(model_final.layers)))
 
+        # final model summary
+        model_final.summary()
+        print("\nModel has {} layers".format(len(model_final.layers)))
         return model_final, img_width, img_height
 
+    def __define_model_compilation__(self):
+        """
+        This function defines model compilation, keras and custom call_backs.
 
-    def prepare_data(self,img_height, img_width):
+        Arguments:
+            ??
+
+
+        return:
+            call_back_list {list} -- list containing all the callback functions
+        """
+
+        # model compilation definitions
+        self.model_final.compile(loss="categorical_crossentropy", optimizer=optimizers.SGD(lr=0.001, momentum=0.9),
+                                 metrics=["accuracy"])
+
+        # define callbacks
+        call_back_list = []
+
+        # early stopping call-back
+        self.early_stopping = EarlyStopping(monitor='val_accuracy', min_delta=0, patience=8, verbose=1, mode='auto',
+                                            restore_best_weights=True)
+        call_back_list.append(self.early_stopping)
+
+        # logging stats to a csv file
+        self.csv_logger = CSVLogger(os.path.join(self.SAVE_LOC, "model_repository",self.MODEL_NAME,"training.log"))
+        call_back_list.append(self.csv_logger)
+
+        # tbCallBack = TensorBoard(log_dir=dir_path + '/model_repository/'+self.MODEL_NAME+'/tensor_logs/' + '/{0}'.format(time()))
+
+
+        # custom learning rate scheduler
+        def step_decay(EPOCH):
+            initial_lrate = 0.001
+            drop = 0.1
+            epochs_drop = 10.0
+            lrate = initial_lrate * math.pow(drop, math.floor((1 + EPOCH) / epochs_drop))
+            print("\n==== Epoch: {0:} and Learning Rate: {1:} ====".format(EPOCH, lrate))
+            return lrate
+        self.change_lr = LearningRateScheduler(step_decay)
+        call_back_list.append(self.change_lr)
+
+        # weights and logs saver
+        # This callback will save the current weights after every epoch
+        # The name of weight file contains epoch number, val accuracy
+        file_path = os.path.join(self.SAVE_LOC, "model_repository",self.MODEL_NAME,"model_logs","weights-{epoch:02d}-{val_accuracy:.2f}.h5")
+        checkpoints = ModelCheckpoint(
+            filepath=file_path,  # Path to the destination model file
+            # The two arguments below mean that we will not overwrite the
+            # model file unless `val_loss` has improved, which
+            # allows us to keep the best model every seen during training.
+            monitor='val_accuracy',
+            save_best_only=False,
+        )
+
+        call_back_list.append(checkpoints)
+        return call_back_list
+
+    def __prepare_data__(self,img_height, img_width):
+        """
+        This functionis used to create image data generators for training and validation dataset.
+
+        Arguments:
+            img_height {int} -- height of input image
+            img_width {int} -- width of input image
+
+        return:
+            train_generator {generator} -- train data generator
+            valid_generator {generator} -- valid data generator
+        """
+
 
         # Initiate the train and test generators with data Augumentation
-        shift = 0.15
-        train_datagen = ImageDataGenerator(rescale=1. / 255,horizontal_flip=True,rotation_range=25)
-
-        test_datagen = ImageDataGenerator( rescale=1. / 255)
+        train_datagen = ImageDataGenerator(rescale=1./255,horizontal_flip=True,rotation_range=25)
+        test_datagen = ImageDataGenerator( rescale=1./255)
 
         train_generator = train_datagen.flow_from_directory(
             self.TRAIN_DIR,
             target_size=(img_height, img_width),
             batch_size=self.BATCHSIZE,
-            class_mode="categorical")
+            class_mode="categorical"
+        )
 
         validation_generator = test_datagen.flow_from_directory(
             self.VALID_DIR,
             target_size=(img_height, img_width),
-            class_mode="categorical")
+            class_mode="categorical"
+        )
+        return train_generator, validation_generator
 
-        return train_generator , validation_generator
+    def __pre_training_report__(self):
+        """
+        This function reports all the model training stats.
+        """
+        print()
+        print("Pre-training report:")
+        print('data_dir_train: ', self.TRAIN_DIR)
+        print('data_dir_valid: ', self.VALID_DIR)
+        print('save_location', os.path.join(self.SAVE_LOC, "model_repository/"))
+        print('model_name: ', self.MODEL_NAME)
+        print('# epochs: ', self.EPOCHS)
+        print('batch_size:', self.BATCHSIZE)
+        print('training_type:', self.TRAINING_TYPE)
+        print('weights: ', self.WEIGHTS)
+        print()
 
+    def __plot_model_training_history__(self, history_dict, plot_val=True, chart_type="--o"):
+        acc = history_dict['accuracy']
+        loss = history_dict['loss']
+
+        if plot_val:
+            val_acc = history_dict['val_accuracy']
+            val_loss = history_dict['val_loss']
+
+        # visualize model training
+        epochs = range(1, len(acc) + 1)
+        fig, axs = plt.subplots(1, 2,figsize=(15,5))
+        axs[0].plot(epochs, loss, chart_type, label='Training loss')
+        if plot_val:
+            axs[0].plot(epochs, val_loss, chart_type, label='Validation loss')
+            axs[0].set_title('training & validation loss')
+        else:
+            axs[0].set_title('training loss')
+
+        axs[1].plot(epochs, acc, chart_type, label='Training acc')
+        if plot_val:
+            axs[1].plot(epochs, val_acc, chart_type, label='Validation acc')
+            axs[1].set_title('training & validation accuracy')
+        else:
+            axs[1].set_title('training accuracy')
+
+        plt.show()
+        # plt.close()
 
     def identify_best_validation_weights(self,log_file,how_many):
         training_logs = pd.read_csv(log_file)
         best_weights = training_logs.nlargest(how_many,"val_acc(%)")
         list_of_weights = best_weights["model_path"].tolist()
         return list_of_weights
-
 
     def save_final_model_data(self,final_model,generator_for_index_map):
         dir_path = os.path.realpath(os.path.dirname(__file__))
@@ -222,103 +349,42 @@ class kerasModelTraining():
         """
         Train function initiates the model training by creating model, preparing data and compiling-evaluating the model.
         """
-        # Create required folder structure
+        # creates the required folder structure
         self.__create_log_folders__(self.MODEL_NAME)
 
-        # Constructing model architecture
-        model_final, img_width, img_height = self.load_model_arhitecture()
+        # constructing model architecture
+        self.model_final, img_width, img_height = self.__load_model_arhitecture__()
 
-        # # Model parameters definitions
-        model_final.compile(loss="categorical_crossentropy", optimizer=optimizers.SGD(lr=0.001, momentum=0.9),metrics=["accuracy"])
+        # model compilation and definiting all the training call backs
+        call_backs = self.__define_model_compilation__()
 
-        # #training generator creation - data prep
-        # train_generator, validation_generator = self.prepare_data(img_height= img_height,img_width=img_width)
-        #
-        # # Call back after every_epochs
-        # early_stopping = EarlyStopping(monitor='val_acc', min_delta=0, patience=8, verbose=1, mode='auto',restore_best_weights=True)
-        # csv_logger = CSVLogger(os.path.join(dir_path,"model_repository","training.log"))
-        # # tbCallBack = TensorBoard(log_dir=dir_path + '/model_repository/'+self.MODEL_NAME+'/tensor_logs/' + '/{0}'.format(time()))
-        #
-        # # learning rate schedule
-        # def step_decay(EPOCH):
-        #     initial_lrate = 0.001
-        #     drop = 0.1
-        #     epochs_drop = 10.0
-        #     lrate = initial_lrate * math.pow(drop, math.floor((1 + EPOCH) / epochs_drop))
-        #     print("\n==== Epoch: {0:} and Learning Rate: {1:} ====".format(EPOCH, lrate))
-        #     return lrate
-        # change_lr = LearningRateScheduler(step_decay)
-        #
-        #
-        # # class_weight = { 0:2, 1:4, 2:5, 3:1, 4:1, 5:1, 6:1}
-        # print ("\nStarted Model training..\n")
-        # # Model training
-        # validation_steps =  (self.VALIDATION_SAMPLES//self.BATCHSIZE)
-        # model_final.fit_generator(
-        #
-        #     train_generator,
-        #     steps_per_epoch=self.TRAIN_SAMPLES//self.BATCHSIZE,
-        #     epochs=self.EPOCHS,verbose=1,
-        #     validation_data=validation_generator,
-        #     validation_steps=validation_steps,
-        #     callbacks=[early_stopping,csv_logger, change_lr,
-        #                WeightsSaver(model_final, img_height, img_width,self.VALID_DIR,self.MODEL_NAME)]
-        # )
-        # self.save_final_model_data(model_final,validation_generator)
-        #
-        # # Cleaning
-        # del model_final
-        # if os.path.exists(os.path.join(dir_path,"model_repository","training.log")):
-        #     os.remove(os.path.join(dir_path,"model_repository","training.log"))
-        # print ("Model Training complete !\n")
-        #
-        # return self.find_best_weights_from_all_epochs(img_height,img_width)
+        # training generator creation - data prep
+        train_generator, validation_generator = self.__prepare_data__(img_height=img_height, img_width=img_width)
+
+        # reporting training parameters
+        self.__pre_training_report__()
+
+        print ("\nStarted Model training..\n")
+        # initiating model training
+        validation_steps =  self.VALIDATION_SAMPLES//self.BATCHSIZE
+        history = self.model_final.fit_generator(
+            train_generator,
+            steps_per_epoch=self.TRAIN_SAMPLES//self.BATCHSIZE,
+            epochs=self.EPOCHS,verbose=1,
+            validation_data=validation_generator,
+            validation_steps=validation_steps,
+            callbacks=call_backs
+        )
+        # saving final model
+        self.save_final_model_data(self.model_final,validation_generator)
+
+        # plotting model training history
+        self.__plot_model_training_history__(history.history)
+
+        # cleaning model variables
+        del self.model_final
+        print ("Model Training complete !\n")
+        return self.find_best_weights_from_all_epochs(img_height,img_width)
 
 
-class WeightsSaver(Callback):
 
-    def __init__(self, model, img_height, img_width,valid_directory,model_name):
-        self.model = model
-        self.epoc_num = 0
-        self.VALID_DIR = valid_directory
-        # self.prediction_object = do_predictions(img_height, img_width)
-        self.complete_log_data = pd.DataFrame(columns=['Epoc', 'model_path','train_acc(%)', 'train_loss', 'val_loss', 'val_acc(%)'])
-        self.MODEL_NAME = model_name
-
-    def on_epoch_end(self, epoch, logs=None):
-
-        dir_path = os.path.realpath(os.path.dirname(__file__))
-        self.epoc_num = self.epoc_num + 1
-
-        model_repo = dir_path + '/model_repository/'+self.MODEL_NAME+'/model_logs/'
-        pathtomodel = ( model_repo + 'model_epoch%04d.h5') % self.epoc_num
-        self.model.save(pathtomodel)
-        print("\nSaved model for epoc number {}".format(self.epoc_num))
-
-
-        #Retriving training logs
-        training_stats =  (pd.read_csv(os.path.join(dir_path,"model_repository","training.log")))
-        last_row = dict(training_stats.iloc[[-1]])
-        training_loss = round(float(last_row["loss"]),3)
-        training_acc = round((float(last_row["acc"]))*100, 3)
-        validation_loss = round(float(last_row["val_loss"]), 3)
-        validation_acc = round((float(last_row["val_acc"]))*100, 3)
-
-
-        print('training loss: {}, training_acc: {}%'.format(training_loss, training_acc))
-        print('validation_loss: {} validation_acc: {}%'.format(validation_loss,validation_acc))
-
-        # print("Calculating practical accuracies for this epoc...")
-        #structured_results, accuracy_, precision_, recall_, accuracy_threshold_ = self.prediction_object.do_predictions_while_training(self.VALID_DIR,pathtomodel)
-        #structured_results.to_csv((dir_path + '/model_repository/result_logs/' + 'results_epoch%04d.csv') % epoch)
-
-
-        stats = pd.Series([self.epoc_num, pathtomodel,training_acc, training_loss, validation_loss, validation_acc],
-                          index=['Epoc', 'model_path','train_acc(%)', 'train_loss', 'val_loss', 'val_acc(%)'])
-
-        self.complete_log_data = self.complete_log_data.append(stats, ignore_index=True)
-        self.complete_log_data.to_csv(dir_path + '/model_repository/'+self.MODEL_NAME+'/model_logs/' + "training_log.csv", index=False)
-
-        with open(dir_path + '/model_repository/'+self.MODEL_NAME+'/model_logs/' + "log.txt", "a") as myfile:
-            myfile.write("Epoc: {0} Training acc: {1}% Training_loss: {2} val_acc: {3}% val_loss: {4} \n"
-                         .format(epoch + 1, training_acc, training_loss, validation_acc, validation_loss))
