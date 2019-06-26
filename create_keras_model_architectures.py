@@ -1,7 +1,10 @@
-from custom_model_arhitectures import customModels
-from tensorflow.keras.layers import Dropout, Flatten, Dense
-from tensorflow.keras.models import Sequential, Model
+from tensorflow.keras.models import Model
 from tensorflow.keras import applications
+from tensorflow.keras.layers import Dense
+from tensorflow.keras.layers import Dropout
+from tensorflow.keras.layers import Flatten
+from tensorflow.keras.models import Sequential
+from custom_model_arhitectures import customModels
 
 class kerasModels():
     """

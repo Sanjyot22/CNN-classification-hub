@@ -1,7 +1,6 @@
 # This scripts contains all the default training parametes pre-set for model training.
 # Description about all the required parameters for training is mentioned below.
 
-
 """
 All the recognition models available:
 
@@ -10,10 +9,15 @@ keras_models= ['xception', 'vgg16', 'vgg19', 'resnet50', 'inceptionv3',
                 'densenet121', 'densenet169', 'densenet201', 'mobilenet']
 """
 
+#####################################   Essential Model Training parameters   ##########################################
 
 # path to training and validation directory
-TRAIN_DIR = "/Users/sanjyotzade/Documents/datasets/sample_training_images/training_data" # path to training directory. Classes wise folders of images
-VALID_DIR = "/Users/sanjyotzade/Documents/datasets/sample_training_images/testing_data" # path to validation directory. Classes wise folders of images
+
+# path to training directory. Classes wise folders of images
+TRAIN_DIR = "/Users/sanjyotzade/Documents/datasets/sample_training_images/training_data"
+
+# path to validation directory. Classes wise folders of images
+VALID_DIR = "/Users/sanjyotzade/Documents/datasets/sample_training_images/testing_data"
 
 # Initializing model parameters
 MODEL_NAME = "resnet50" # specify the model name from above list
@@ -50,3 +54,6 @@ WEIGHTS = "imagenet"
 SAVE_LOCATION = "./" # path to folder where model weights and logs will be saved
 
 
+
+
+######################################   Advanced Model Training Parameters   ##########################################
