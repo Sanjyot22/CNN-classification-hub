@@ -1,4 +1,3 @@
-import os
 import argparse
 from config import *
 from train_keras_model import kerasModelTraining

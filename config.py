@@ -17,7 +17,7 @@ VALID_DIR = "/Users/sanjyotzade/Documents/datasets/sample_training_images/testin
 
 # Initializing model parameters
 MODEL_NAME = "resnet50" # specify the model name from above list
-EPOCHS = 3   # number of epochs to train
+EPOCHS = 2   # number of epochs to train
 BATCH_SIZE = 32 # batch size of training
 CLEAR_LOGS = True # if True will clear model training logs & weights from the folder
 # Note: if re-starting model training the make sure that earlier weights are preserved by keeping "CLEAR_LOGS=False"
