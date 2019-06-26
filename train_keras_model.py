@@ -4,6 +4,7 @@ import json
 import sys
 import math
 import shutil
+import warnings
 import pandas as pd
 import matplotlib.pyplot as plt
 
@@ -20,6 +21,7 @@ from tensorflow.keras.preprocessing.image import ImageDataGenerator
 # import user-defined libraries
 from prediction_script import do_predictions
 from create_keras_model_architectures import kerasModels
+warnings.filterwarnings("ignore")
 
 class kerasModelTraining():
     """

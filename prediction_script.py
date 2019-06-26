@@ -2,6 +2,7 @@
 import os
 import gc
 import glob
+import warnings
 import numpy as np
 import pandas as pd
 from PIL import Image
@@ -10,6 +11,7 @@ from PIL import ImageOps
 from pandas_ml import ConfusionMatrix
 from tensorflow.keras.models import load_model
 from create_keras_model_architectures import kerasModels
+warnings.filterwarnings("ignore")
 
 class do_predictions():
 
