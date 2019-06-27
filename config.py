@@ -1,4 +1,4 @@
-# This scripts contains all the default training parametes pre-set for model training.
+# This scripts contains all the default training parameters pre-set for model training.
 # Description about all the required parameters for training is mentioned below.
 
 """
@@ -14,16 +14,16 @@ keras_models= ['xception', 'vgg16', 'vgg19', 'resnet50', 'inceptionv3',
 # path to training and validation directory
 
 # path to training directory. Classes wise folders of images
-TRAIN_DIR = "/Users/sanjyotzade/Documents/datasets/sample_training_images/training_data"
+TRAIN_DIR = "/Users/sanjyotzade/Documents/datasets/png/foam_dataset/foam_detection_dataset/train"
 
 # path to validation directory. Classes wise folders of images
-VALID_DIR = "/Users/sanjyotzade/Documents/datasets/sample_training_images/testing_data"
+VALID_DIR = "/Users/sanjyotzade/Documents/datasets/png/foam_dataset/foam_detection_dataset/test"
 
 # Initializing model parameters
-MODEL_NAME = "resnet50" # specify the model name from above list
-EPOCHS = 2   # number of epochs to train
+MODEL_NAME = "vgg16" # specify the model name from above list
+EPOCHS = 30   # number of epochs to train
 BATCH_SIZE = 32 # batch size of training
-CLEAR_LOGS = True # if True will clear model training logs & weights from the folder
+CLEAR_LOGS = True # if True, will clear model training logs & weights from the folder
 # Note: if re-starting model training the make sure that earlier weights are preserved by keeping "CLEAR_LOGS=False"
 # Note: when re-starting model training with "CLEAR_LOGS=True".
 #       1. If restarting from earlier saved weights those weights will not be deleted, everything else will be deleted
