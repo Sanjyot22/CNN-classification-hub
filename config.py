@@ -14,15 +14,20 @@ keras_models= ['xception', 'vgg16', 'vgg19', 'resnet50', 'inceptionv3',
 # path to training and validation directory
 
 # path to training directory. Classes wise folders of images
-TRAIN_DIR = "/Users/sanjyotzade/Documents/datasets/sample_training_images/training_data"
+TRAIN_DIR = "./training_data"
 
 # path to validation directory. Classes wise folders of images
-VALID_DIR = "/Users/sanjyotzade/Documents/datasets/sample_training_images/testing_data"
+VALID_DIR = "./testing_data"
 
 # Initializing model parameters
-MODEL_NAME = "vgg16"  # specify the model name from above list
 IMG_HEIGHT = None  # if None, default input image size as per model will be used
 IMG_WIDTH = None  # if None, default input image size as per model will be used
+MODEL_NAME = "vgg16"  # specify the model name from above list
+# if "imagenet" then imagenet trained weight intialization is used for keras model.
+# However, in order to re-start training weights path can be specified here.
+WEIGHTS = "imagenet"
+
+SAVE_LOCATION = "./"  # path to folder where model weights and logs will be saved
 EPOCHS = 3  # number of epochs to train
 BATCH_SIZE = 32  # batch size of training
 CLEAR_LOGS = False  # if True, will clear model training logs & weights from the folder
@@ -32,7 +37,7 @@ CLEAR_LOGS = False  # if True, will clear model training logs & weights from the
 #       2. If restarting model training from beginning then everything in the folder will be deleted.
 # Note: Model logs are only delete as per model name. If training a model with new name & "CLEAR_LOGS=True" then
 #       then weights & logs other earlier model name will not be deleted.
-
+TRAINING_TYPE = "train_all"
 # There are three modes of training available:
 # ["train_all","freeze_some","freeze_all"]
 """
@@ -48,12 +53,6 @@ Model is created by using architecture from keras application model and adding 2
 3. "freeze_all":
     None of the model layers will be trained. Only added last 2 dense layers will be trained.
 """
-TRAINING_TYPE = "train_all"
-
-# if "imagenet" then imagenet trained weight intialization is used for keras model.
-# However, in order to re-start training weights path can be specified here.
-WEIGHTS = "imagenet"
-SAVE_LOCATION = "./"  # path to folder where model weights and logs will be saved
 
 
 
