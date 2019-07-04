@@ -1,6 +1,6 @@
 # CNN classification hub
 
-This project contains 11 different SOTA ready to train CNN architecture's for **image classification**
+This project contains 12 different SOTA ready to train CNN architecture's for **image classification**
 
 ## How to use CNN classification hub
 
