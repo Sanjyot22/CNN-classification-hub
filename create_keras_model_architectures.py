@@ -11,7 +11,7 @@ class kerasModels():
     Class used to create cnn-architecture available in keras application.
     """
 
-    def __init__(self,model_name,training_type,num_classes):
+    def __init__(self, model_name, training_type, num_classes, height, width):
         """
         Constructor to define parameters for model architecture creation.
 
@@ -23,6 +23,8 @@ class kerasModels():
 
         # defining class level variables
         self.MODELNAME = model_name
+        self.HEIGTH = height
+        self.WIDTH = width
         self.TRAINING_TYPE = training_type
         self.NUMBER_OF_CLASSES = num_classes
         self.CUSTOM_MODELS = ["micro_exp_net"]
@@ -145,7 +147,9 @@ class kerasModels():
             img_height {int} -- input height of the image as per resnet-50.
             img_width {int} -- input width of the image as per resnet-50.
         """
-        return  applications.resnet50.ResNet50(weights="imagenet", include_top=False, input_shape=(img_width, img_height, 3)) , img_width, img_height
+        if self.HEIGTH: img_height = self.HEIGTH
+        if self.WIDTH: img_width = self.WIDTH
+        return  applications.resnet50.ResNet50(weights="imagenet", include_top=False, input_shape=(img_width, img_height, 3)), img_width, img_height
 
     def Xception_(self, img_width=299, img_height=299):
         """
@@ -161,7 +165,9 @@ class kerasModels():
             img_height {int} -- input height of the image as per xception.
             img_width {int} -- input width of the image as per xception.
         """
-        return applications.xception.Xception(weights="imagenet", include_top=False, input_shape=(img_width, img_height, 3)) , img_width, img_height
+        if self.HEIGTH: img_height = self.HEIGTH
+        if self.WIDTH: img_width = self.WIDTH
+        return applications.xception.Xception(weights="imagenet", include_top=False, input_shape=(img_width, img_height, 3)), img_width, img_height
 
     def VGG16_(self, img_width=224, img_height=224):
         """
@@ -177,7 +183,9 @@ class kerasModels():
             img_height {int} -- input height of the image as per vgg-16.
             img_width {int} -- input width of the image as per vgg-16.
         """
-        return applications.vgg16.VGG16(weights="imagenet", include_top=False, input_shape=(img_width, img_height, 3)) , img_width, img_height
+        if self.HEIGTH: img_height = self.HEIGTH
+        if self.WIDTH: img_width = self.WIDTH
+        return applications.vgg16.VGG16(weights="imagenet", include_top=False, input_shape=(img_width, img_height, 3)), img_width, img_height
 
     def VGG19_(self, img_width=224, img_height=224):
         """
@@ -193,7 +201,9 @@ class kerasModels():
             img_height {int} -- input height of the image as per vgg-19.
             img_width {int} -- input width of the image as per vgg-19.
         """
-        return applications.vgg19.VGG19(weights="imagenet", include_top=False, input_shape=(img_width, img_height, 3)) , img_width, img_height
+        if self.HEIGTH: img_height = self.HEIGTH
+        if self.WIDTH: img_width = self.WIDTH
+        return applications.vgg19.VGG19(weights="imagenet", include_top=False, input_shape=(img_width, img_height, 3)), img_width, img_height
 
     def InceptionV3_(self, img_width=299, img_height=299):
         """
@@ -209,7 +219,9 @@ class kerasModels():
             img_height {int} -- input height of the image as per inception-v3.
             img_width {int} -- input width of the image as per inception-v3.
         """
-        return applications.inception_v3.InceptionV3(weights = "imagenet", include_top=False, input_shape = (img_width, img_height, 3)) , img_width, img_height
+        if self.HEIGTH: img_height = self.HEIGTH
+        if self.WIDTH: img_width = self.WIDTH
+        return applications.inception_v3.InceptionV3(weights = "imagenet", include_top=False, input_shape = (img_width, img_height, 3)), img_width, img_height
 
     def InceptionResNetV2_(self, img_width=299, img_height=299):
         """
@@ -225,7 +237,9 @@ class kerasModels():
             img_height {int} -- input height of the image as per inception-resnet-v2.
             img_width {int} -- input width of the image as per inception-resnet-v2.
         """
-        return applications.inception_resnet_v2.InceptionResNetV2(weights="imagenet", include_top=False, input_shape=(img_width, img_height, 3)) , img_width, img_height
+        if self.HEIGTH: img_height = self.HEIGTH
+        if self.WIDTH: img_width = self.WIDTH
+        return applications.inception_resnet_v2.InceptionResNetV2(weights="imagenet", include_top=False, input_shape=(img_width, img_height, 3)), img_width, img_height
 
     def NASNetLarge_(self, img_width=331, img_height=331):
         """
@@ -241,7 +255,9 @@ class kerasModels():
             img_height {int} -- input height of the image as per nasnet-largenasnet-large.
             img_width {int} -- input width of the image as per nasnet-large.
         """
-        return applications.nasnet.NASNetLarge(weights="imagenet", include_top=False, input_shape=(img_width, img_height, 3)) , img_width, img_height
+        if self.HEIGTH: img_height = self.HEIGTH
+        if self.WIDTH: img_width = self.WIDTH
+        return applications.nasnet.NASNetLarge(weights="imagenet", include_top=False, input_shape=(img_width, img_height, 3)), img_width, img_height
 
     def NASNetsmall_(self, img_width=224, img_height=224):
         """
@@ -257,7 +273,9 @@ class kerasModels():
             img_height {int} -- input height of the image as per nasnet-small.
             img_width {int} -- input width of the image as per nasnet-small.
         """
-        return applications.nasnet.NASNetMobile(weights="imagenet", include_top=False, input_shape=(img_width, img_height, 3)) , img_width, img_height
+        if self.HEIGTH: img_height = self.HEIGTH
+        if self.WIDTH: img_width = self.WIDTH
+        return applications.nasnet.NASNetMobile(weights="imagenet", include_top=False, input_shape=(img_width, img_height, 3)), img_width, img_height
 
     def DenseNet121_(self, img_width=224, img_height=224):
         """
@@ -273,7 +291,9 @@ class kerasModels():
             img_height {int} -- input height of the image as per densenet-121.
             img_width {int} -- input width of the image as per densenet-121.
         """
-        return applications.densenet.DenseNet121(weights="imagenet", include_top=False, input_shape=(img_width, img_height, 3)) , img_width, img_height
+        if self.HEIGTH: img_height = self.HEIGTH
+        if self.WIDTH: img_width = self.WIDTH
+        return applications.densenet.DenseNet121(weights="imagenet", include_top=False, input_shape=(img_width, img_height, 3)), img_width, img_height
 
     def DenseNet201_(self, img_width=224, img_height=224):
         """
@@ -289,7 +309,9 @@ class kerasModels():
             img_height {int} -- input height of the image as per densenet-201.
             img_width {int} -- input width of the image as per densenet-201.
         """
-        return applications.densenet.DenseNet201(weights="imagenet", include_top=False, input_shape=(img_width, img_height, 3)) , img_width, img_height
+        if self.HEIGTH: img_height = self.HEIGTH
+        if self.WIDTH: img_width = self.WIDTH
+        return applications.densenet.DenseNet201(weights="imagenet", include_top=False, input_shape=(img_width, img_height, 3)), img_width, img_height
 
     def DenseNet169_(self, img_width=224, img_height=224):
         """
@@ -305,7 +327,9 @@ class kerasModels():
             img_height {int} -- input height of the image as per densenet-169.
             img_width {int} -- input width of the image as per densenet-169.
         """
-        return applications.densenet.DenseNet169(weights="imagenet", include_top=False, input_shape=(img_width, img_height, 3)) , img_width, img_height
+        if self.HEIGTH: img_height = self.HEIGTH
+        if self.WIDTH: img_width = self.WIDTH
+        return applications.densenet.DenseNet169(weights="imagenet", include_top=False, input_shape=(img_width, img_height, 3)), img_width, img_height
 
     def MobileNet_(self, img_width=224, img_height=224):
         """
@@ -321,5 +345,7 @@ class kerasModels():
             img_height {int} -- input height of the image as per mobilenet.
             img_width {int} -- input width of the image as per mobilenet.
         """
-        return applications.mobilenet.MobileNet(weights="imagenet", include_top=False, input_shape=(img_width, img_height, 3)) , img_width, img_height
+        if self.HEIGTH: img_height = self.HEIGTH
+        if self.WIDTH: img_width = self.WIDTH
+        return applications.mobilenet.MobileNet(weights="imagenet", include_top=False, input_shape=(img_width, img_height, 3)), img_width, img_height
 

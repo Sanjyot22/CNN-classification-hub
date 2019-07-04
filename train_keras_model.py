@@ -5,6 +5,7 @@ import sys
 import math
 import shutil
 import warnings
+from config import *
 import pandas as pd
 import matplotlib.pyplot as plt
 
@@ -28,7 +29,7 @@ class kerasModelTraining():
     This class is used to initiate model training as per parameters mentioned in config file.
     """
 
-    def __init__(self,data_dir_train,data_dir_valid,batch_size,epochs,model_name,training_type,save_loc,weights,clear):
+    def __init__(self,data_dir_train,data_dir_valid,batch_size,epochs,model_name,height,width,training_type,save_loc,weights,clear):
         """
         Constructor to define parameters for model training and clear the logs, if specified.
 
@@ -52,13 +53,15 @@ class kerasModelTraining():
         self.BATCHSIZE = batch_size
         self.EPOCHS = epochs
         self.MODEL_NAME = model_name
+        self.IMG_HEIGHT = height
+        self.IMG_WIDTH = width
         self.TRAINING_TYPE = training_type
         self.WEIGHTS = weights
 
         # check the paths are valid
-        if not os.path.exists(self.TRAIN_DIR) : print ("Invalid training path");sys.exit();
-        if not os.path.exists(self.VALID_DIR) : print ("Invalid validation path");sys.exit();
-        if not os.path.exists(self.SAVE_LOC) : print ("Invalid save location");sys.exit();
+        if not os.path.exists(self.TRAIN_DIR): print ("\nInvalid training path\n"); sys.exit();
+        if not os.path.exists(self.VALID_DIR): print ("\nInvalid validation path\n"); sys.exit();
+        if not os.path.exists(self.SAVE_LOC): print ("\nInvalid save location\n"); sys.exit();
 
         # Remove unwanted folders in mac
         remove_unwanted_folders = "find . -name '.DS_Store' -type f -delete"
@@ -136,7 +139,8 @@ class kerasModelTraining():
             img_height {int} -- input height of the image
         """
         # getting the model architecture
-        modelCreator = kerasModels(self.MODEL_NAME, self.TRAINING_TYPE, self.NUMBER_OF_CLASSES)
+        modelCreator = kerasModels(self.MODEL_NAME, self.TRAINING_TYPE, self.NUMBER_OF_CLASSES,
+                                   self.IMG_HEIGHT, self.IMG_WIDTH)
         if (self.MODEL_NAME in self.keras_models):
             model_final, img_width, img_height = modelCreator.create_model_base()
         else:
@@ -166,44 +170,48 @@ class kerasModelTraining():
         """
 
         # model compilation definitions
-        self.model_final.compile(loss="categorical_crossentropy", optimizer=optimizers.SGD(lr=0.001, momentum=0.9),
-                                 metrics=["accuracy"])
+        self.model_final.compile(loss=LOSS, optimizer=OPTIMIZER,metrics=["accuracy"])
 
         # define callbacks
         call_back_list = []
 
         # early stopping call-back
-        self.early_stopping = EarlyStopping(monitor='val_accuracy', min_delta=0, patience=8, verbose=1, mode='auto',
-                                            restore_best_weights=True)
-        call_back_list.append(self.early_stopping)
+        if EARLY_STOPPING:
+            self.early_stopping = EarlyStopping(monitor=ES_MONITOR, min_delta=ES_MIN_DELTA,
+                                                patience=ES_PATIENCE, verbose=ES_VERBOSE, mode=ES_MODE,
+                                                restore_best_weights=ES_RESTORE_BEST_WEIGHTS)
+            call_back_list.append(self.early_stopping)
 
         # logging stats to a csv file
         self.csv_logger = CSVLogger(os.path.join(self.SAVE_LOC, "model_repository",self.MODEL_NAME,"training.log"))
         call_back_list.append(self.csv_logger)
 
-        # tbCallBack = TensorBoard(log_dir=dir_path + '/model_repository/'+self.MODEL_NAME+'/tensor_logs/' + '/{0}'.format(time()))
 
         # custom learning rate scheduler
-        def step_decay(EPOCH):
-            initial_lrate = 0.001
-            drop = 0.1
-            epochs_drop = 10.0
-            lrate = initial_lrate * math.pow(drop, math.floor((1 + EPOCH) / epochs_drop))
-            print("\n==== Epoch: {0:} and Learning Rate: {1:} ====".format(EPOCH, lrate))
-            return lrate
-        self.change_lr = LearningRateScheduler(step_decay)
-        call_back_list.append(self.change_lr)
+        if OPTIMIZER == "sgd":
+            def step_decay(EPOCH):
+                initial_lrate = 0.001
+                drop = 0.1
+                epochs_drop = 10.0
+                lrate = initial_lrate * math.pow(drop, math.floor((1 + EPOCH) / epochs_drop))
+                print("\n==== Epoch: {0:} and Learning Rate: {1:} ====".format(EPOCH, lrate))
+                return lrate
+            self.change_lr = LearningRateScheduler(step_decay)
+            call_back_list.append(self.change_lr)
 
         # weights and logs saver
         # This callback will save the current weights after every epoch
         # The name of weight file contains epoch number, val accuracy
-        file_path = os.path.join(self.SAVE_LOC, "model_repository",self.MODEL_NAME,"model_logs","weights-{epoch:03d}-{val_accuracy:.2f}.h5")
+        file_path = os.path.join(
+            self.SAVE_LOC, "model_repository", self.MODEL_NAME,"model_logs",
+            "weights-{epoch:03d}-{val_accuracy:.4f}.h5"
+                                 )
         checkpoints = ModelCheckpoint(
             filepath=file_path,  # Path to the destination model file
             # The two arguments below mean that we will not overwrite the
             # model file unless `val_loss` has improved, which
             # allows us to keep the best model every seen during training.
-            monitor='val_accuracy',
+            monitor=SAVING_METRIC,
             save_best_only=False,
         )
 
@@ -225,7 +233,8 @@ class kerasModelTraining():
 
 
         # Initiate the train and test generators with data Augumentation
-        train_datagen = ImageDataGenerator(rescale=1./255,horizontal_flip=True,rotation_range=25)
+        train_datagen = ImageDataGenerator(rescale=1./255,horizontal_flip=HORIZONTAL_FLIP,
+                                           rotation_range=ROTATION_RANGE)
         test_datagen = ImageDataGenerator( rescale=1./255)
 
         train_generator = train_datagen.flow_from_directory(
@@ -253,6 +262,7 @@ class kerasModelTraining():
         print('save_location', os.path.join(self.SAVE_LOC, "model_repository/"))
         print("classes: {}".format(self.CLASSES))
         print('model_name: ', self.MODEL_NAME)
+        print('img height: {} img width: {}'.format(self.IMG_HEIGHT,self.IMG_WIDTH))
         print('# epochs: ', self.EPOCHS)
         print('batch_size:', self.BATCHSIZE)
         print('training_type:', self.TRAINING_TYPE)
@@ -426,11 +436,11 @@ class kerasModelTraining():
 
         print ("\nStarted Model training..\n")
         # initiating model training
-        validation_steps =  self.VALIDATION_SAMPLES//self.BATCHSIZE
+        validation_steps = self.VALIDATION_SAMPLES//self.BATCHSIZE
         history = self.model_final.fit_generator(
             train_generator,
             steps_per_epoch=self.TRAIN_SAMPLES//self.BATCHSIZE,
-            epochs=self.EPOCHS,verbose=1,
+            epochs=self.EPOCHS, verbose=VERBOSE,
             validation_data=validation_generator,
             validation_steps=validation_steps,
             callbacks=call_backs
