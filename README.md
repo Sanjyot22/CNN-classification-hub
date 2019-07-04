@@ -1,5 +1,5 @@
 
-# 12 Different State-of-the0-Art CNN architecture's for image classification
+# 12 Different State-of-the-Art CNN architecture's for image classification
 ==================================================================
 
 
