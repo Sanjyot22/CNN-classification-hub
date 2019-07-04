@@ -307,7 +307,8 @@ class kerasModelTraining():
         # save the graph and show
         path_to_save_fig = os.path.join(self.SAVE_LOC, "model_repository", self.MODEL_NAME,self.MODEL_NAME+"_stats.png")
         plt.savefig(path_to_save_fig)
-        plt.show()
+        if SHOW:
+            plt.show()
         plt.close()
         return
 

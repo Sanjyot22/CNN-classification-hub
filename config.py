@@ -21,8 +21,8 @@ VALID_DIR = "/Users/sanjyotzade/Documents/datasets/sample_training_images/testin
 
 # Initializing model parameters
 MODEL_NAME = "vgg16"  # specify the model name from above list
-IMG_HEIGHT = 64  # if None, default input image size as per model will be used
-IMG_WIDTH = 64  # if None, default input image size as per model will be used
+IMG_HEIGHT = None  # if None, default input image size as per model will be used
+IMG_WIDTH = None  # if None, default input image size as per model will be used
 EPOCHS = 3  # number of epochs to train
 BATCH_SIZE = 32  # batch size of training
 CLEAR_LOGS = True  # if True, will clear model training logs & weights from the folder
@@ -112,3 +112,7 @@ ROTATION_RANGE = 30
 # model training verbose parameters
 # This parameters controls is model training logs are to printed during training
 VERBOSE = 1  # Integer. 0, 1, or 2. Verbosity mode. 0 = silent, 1 = progress bar, 2 = one line per epoch.
+
+# To show final model training plot as a graph
+# This graph will also be saved in model repository
+SHOW = False  # if True, after model training, graph will be displayed
