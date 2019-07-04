@@ -25,7 +25,7 @@ IMG_HEIGHT = None  # if None, default input image size as per model will be used
 IMG_WIDTH = None  # if None, default input image size as per model will be used
 EPOCHS = 3  # number of epochs to train
 BATCH_SIZE = 32  # batch size of training
-CLEAR_LOGS = True  # if True, will clear model training logs & weights from the folder
+CLEAR_LOGS = False  # if True, will clear model training logs & weights from the folder
 # Note: if re-starting model training the make sure that earlier weights are preserved by keeping "CLEAR_LOGS=False"
 # Note: when re-starting model training with "CLEAR_LOGS=True".
 #       1. If restarting from earlier saved weights those weights will not be deleted, everything else will be deleted
