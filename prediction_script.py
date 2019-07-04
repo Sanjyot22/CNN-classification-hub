@@ -39,7 +39,7 @@ class do_predictions():
         self.TRAINING_TYPE = training_type
         self.NUMBER_OF_CLASSES = nclasses
 
-    def load_model_h5(self,hdf5_filename):
+    def load_model_h5(self, hdf5_filename):
         """
         This function is used to load the model.
 

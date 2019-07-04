@@ -26,7 +26,6 @@ MODEL_NAME = "vgg16"  # specify the model name from above list
 # if "imagenet" then imagenet trained weight intialization is used for keras model.
 # However, in order to re-start training weights path can be specified here.
 WEIGHTS = "imagenet"
-
 SAVE_LOCATION = "./"  # path to folder where model weights and logs will be saved
 EPOCHS = 3  # number of epochs to train
 BATCH_SIZE = 32  # batch size of training

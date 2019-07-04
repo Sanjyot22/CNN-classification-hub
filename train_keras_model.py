@@ -10,9 +10,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # Import keras Libraries
-from tensorflow.keras import optimizers
-from tensorflow.keras.models import  load_model
-from tensorflow.keras.callbacks import TensorBoard
+from tensorflow.keras.models import load_model
 from tensorflow.keras.callbacks import CSVLogger
 from tensorflow.keras.callbacks import EarlyStopping
 from tensorflow.keras.callbacks import ModelCheckpoint
@@ -233,7 +231,7 @@ class kerasModelTraining():
 
 
         # Initiate the train and test generators with data Augumentation
-        train_datagen = ImageDataGenerator(rescale=1./255,horizontal_flip=HORIZONTAL_FLIP,
+        train_datagen = ImageDataGenerator(rescale=1./255, horizontal_flip=HORIZONTAL_FLIP,
                                            rotation_range=ROTATION_RANGE)
         test_datagen = ImageDataGenerator( rescale=1./255)
 
@@ -386,6 +384,7 @@ class kerasModelTraining():
             self.TRAINING_TYPE,
             self.NUMBER_OF_CLASSES
         )
+
         analysis_df = pd.DataFrame([])
         for weight_file_path in weights_to_test:
             weights_name = weight_file_path.split("/")[-1]
@@ -400,7 +399,7 @@ class kerasModelTraining():
             print ("Result for weight {} saved to {}\n".format(weights_name, path_to_csv))
 
             # append to final report
-            stats_dict ={
+            stats_dict = {
                 "weights_name":weights_name,
                 "accuracy":stats[0],
                 "precision":stats[1],
