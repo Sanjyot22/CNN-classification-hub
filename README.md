@@ -4,10 +4,10 @@ This project contains 11 different SOTA ready to train CNN architecture's for **
 
 ## How to use CNN classification hub
 
-`CNN classification hub` has three major pre-built components
+`CNN classification hub` has three major pre-built model training phases
 
 - Model architecture creation
-- Data preparation for model training
+- Model training on specified architecture
 - Analyzing best weights from all the saved weights
 
 Aim is to ease the efforts in training different model architecture for image classification tasks. 
@@ -22,13 +22,13 @@ python run_model.py -dtrain "./data/train" -dvalid "./data/test/" -m vgg16 -w "i
 ```
 
 Note:
-- Validation/test data set is **must** for model training with the hub. If test data not present, suggest spitting the training data.
+- Validation/test dataset is **must** for model training with the hub. 
 - Names of category folder in both train and validation/test folder should be exactly same.
 - Names of the category folder will be used as tag for that particular class.
 - Above commands has only a few required parameters. Description about every dynamic parameter is briefed in "config.py".
 - Edit the default parameters in "config.py" or pass them as run-time arguments as above.
 
-**Expected results**
+## Expected results
 
 Folder named "model_repository" will be created at the location specified (default current folder). Folder structure is mentioned below. 
  
