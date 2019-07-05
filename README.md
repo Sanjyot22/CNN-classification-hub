@@ -20,7 +20,7 @@ Aim is to ease the efforts in training different model architecture for image cl
 2. Make the changes to default parameters in "config.py" or run the below command. "config.py" file contains all the model training parameters pre-set for training like model_name_to_train, number of epochs, batch-size etc.
 
 ``` 
-python run_model.py -dtrain "./data/train" -dvalid "./data/test/" -m vgg16 -w "imagenet" -tt train_all 
+python run_model.py -dtrain <path to train dir> -dvalid <path to test/validation dir> -m vgg16 -w "imagenet" -tt train_all 
 ```
 
 Note:
