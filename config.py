@@ -11,8 +11,11 @@ keras_models= ['xception', 'vgg16', 'vgg19', 'resnet50', 'inceptionv3',
 
 #####################################   Essential Model Training parameters   ##########################################
 
-# path to training and validation directory
+# This is an identifier for training iteration name. This will be used as prefix to model logs folder.
+# If not mentioned name of model logs folder will be same as "model name" used for training.
+ITERATION_NAME = ""
 
+# path to training and validation directory
 # path to training directory. Classes wise folders of images
 TRAIN_DIR = "./training_data"
 

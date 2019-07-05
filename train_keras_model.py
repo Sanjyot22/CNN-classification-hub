@@ -50,11 +50,16 @@ class kerasModelTraining():
         self.SAVE_LOC = save_loc
         self.BATCHSIZE = batch_size
         self.EPOCHS = epochs
-        self.MODEL_NAME = model_name
         self.IMG_HEIGHT = height
         self.IMG_WIDTH = width
         self.TRAINING_TYPE = training_type
         self.WEIGHTS = weights
+
+        # logs folder name
+        if ITERATION_NAME != "":
+            self.MODEL_NAME = ITERATION_NAME + "_" + model_name
+        else:
+            self.MODEL_NAME = model_name
 
         # check the paths are valid
         if not os.path.exists(self.TRAIN_DIR): print ("\nInvalid training path\n"); sys.exit();
