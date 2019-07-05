@@ -61,6 +61,7 @@ model_repository
 │   |    ├── <weight for each epoch>
 │   |    ├── <evaluation csv for each weight>
 │   ├── tensor_logs
+│   |    ├── <tensor board files>
 │   │   training.log
 │   │   <model name>_stats.png
 │   │   index_class_mapping.json
@@ -88,8 +89,6 @@ model_repository
 └── Densenet201
 ```
 
-[![Love](https://forthebadge.com/images/badges/built-with-love.svg)](https://github.com/Sanjyot22/CNN-classification-hub)
-
 ## Understanding the workflow
 
 As mentioned earlier the entire workflow has three major phases
@@ -108,3 +107,4 @@ In this final phase of the analysis all the weights are analysed against validat
 
 Note: This post training validation is relevant because the validation accuracy reported during model training is usually calculated with batch normalization. Hence the practical accuracy on image level prediction differs from the validation accuracy calculated during model training. 
 
+[![Love](https://forthebadge.com/images/badges/built-with-love.svg)](https://github.com/Sanjyot22/CNN-classification-hub)
