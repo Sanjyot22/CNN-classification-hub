@@ -411,7 +411,7 @@ class kerasModelTraining():
         # saving the final report
         print ("Analysis report:\n")
         path_to_report = os.path.join(model_folder, "analysis_report.csv")
-        analysis_df.to_csv(path_to_report)
+        analysis_df.to_csv(path_to_report, index=False)
         print (analysis_df,"\n")
         return path_to_report
 
