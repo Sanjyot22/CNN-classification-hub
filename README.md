@@ -23,6 +23,13 @@ Aim is to ease the efforts in training different model architecture for image cl
 python run_model.py -dtrain <path to train dir> -dvalid <path to test/validation dir> -m vgg16 -w "imagenet" -tt train_all 
 ```
 
+other model names:
+**'xception', 'vgg16', 'vgg19', 'resnet50', 'inceptionv3',
+'inceptionresnetv2', 'nasnet_small','nasnet_large',
+'densenet121', 'densenet169', 'densenet201', 'mobilenet'**
+
+(refer "config.py" for further details on more parameters)
+
 Note:
 - Validation/test dataset is **must** for model training with the hub.
 - Names of category folder in both train and validation/test folder should be exactly same.
