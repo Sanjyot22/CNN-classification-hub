@@ -88,14 +88,23 @@ model_repository
 └── Densenet201
 ```
 
+[![Love](https://forthebadge.com/images/badges/built-with-love.svg)](https://github.com/Sanjyot22/CNN-classification-hub)
+
 ## Understanding the workflow
 
 As mentioned earlier the entire workflow has three major phases
 
 **Model architecture creation**
 
+The first step of the pipeline is model architecture creation. Model architecture is created as specified by user in "config.py" (MODEL_NAME). After the model architecture, "m" (length of nodes list) number of fully connected layers are added at the top of model. Finally a softmax layer is stacked with "n_classes" number of ouput nodes. All the default parameters are mentioned in "config.py", change default values as required.  
+
 **Model training on specified architecture**
 
+In this phase model compilation is defined. Which include loss function selection, optimizers, callbacks etc (change default values as required). Then as per image-data folder, training and validation generators are created with data augmentation with training data. And then model training is started.
+ 
 **Analyzing best weights from all the saved weights**
 
-[![Love](https://forthebadge.com/images/badges/built-with-love.svg)](https://github.com/Sanjyot22/CNN-classification-hub)
+In this final phase of the analysis all the weights are analysed against validation/test dataset. Corresponding prediction data is saved in the same folder with the weights. Precision and Recall w.r.t to confidence threshold (change default values as required) are also calculated. 
+
+Note: This post training validation is relevant because the validation accuracy reported during model training is usually calculated with batch normalization. Hence the practical accuracy on image level prediction differs from the validation accuracy calculated during model training. 
+
