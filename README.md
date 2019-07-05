@@ -87,6 +87,8 @@ model_repository
 ├── Densenet121
 ├── Densenet169
 └── Densenet201
+
+More architectures coming soon...
 ```
 
 ## Understanding the workflow
