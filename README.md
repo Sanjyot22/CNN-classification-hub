@@ -26,7 +26,6 @@ python run_model.py -dtrain <path to train dir> -dvalid <path to test/validation
 other model names:
 **'xception', 'vgg16', 'vgg19', 'resnet50', 'inceptionv3', 'inceptionresnetv2', 'nasnet_small', 'nasnet_large', 'densenet121', 'densenet169', 'densenet201', 'mobilenet'**
 
-(refer "config.py" for further details on more parameters)
 
 Note:
 - Validation/test dataset is **must** for model training with the hub.
@@ -35,6 +34,9 @@ Note:
 - Description about every dynamic parameter is briefed in "config.py".
 - Edit the default parameters in "config.py" or pass them as run-time arguments as above.
 - **Class-level image folder structure** is mentioned below:
+
+(refer "config.py" for further details on more parameters)
+
 ```
 dataset
 ├── train
