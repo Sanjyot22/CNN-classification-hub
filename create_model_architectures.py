@@ -19,7 +19,7 @@ class Models():
     Class used to create cnn-architecture available in keras application.
     """
 
-    def __init__(self, model_name, training_type, num_classes, height, width):
+    def __init__(self, model_name, training_type, num_classes, height, width, num_freeze_layer):
         """
         Constructor to define parameters for model architecture creation.
 
@@ -27,6 +27,7 @@ class Models():
             model_name {str} -- name of the model to be generated for classification.
             training_type {str} -- string representing weather to train complete/partial model.
             num_classes {int} -- number of classes in classification tasks.
+            num_freeze_layer {int} -- number of layers to freeze if training type is "freeze_some"
         """
 
         # defining class level variables
@@ -36,6 +37,7 @@ class Models():
         self.TRAINING_TYPE = training_type
         self.NUMBER_OF_CLASSES = num_classes
         self.CUSTOM_MODELS = ["micro_exp_net"]
+        self.NUMBER_LAYER_FREEZE = num_freeze_layer
 
     def __model_call__(self, model_name):
         """
@@ -117,7 +119,7 @@ class Models():
 
         return model_obj
 
-    def create_model_base(self,number_of_layers_to_freeze=7):
+    def create_model_base(self):
         """
         create_model_base is used to generated spcified architecture, freeze specified
         layers and add the final classification layer.
@@ -135,7 +137,7 @@ class Models():
         if self.MODELNAME in self.CUSTOM_MODELS:
             custom_model_creation_obj = CustomModels()
             model_call = (getattr(custom_model_creation_obj, self.MODELNAME))
-            return model_call(nclasses = self.NUMBER_OF_CLASSES)
+            return model_call(nclasses=self.NUMBER_OF_CLASSES)
 
         # creating model architecture
         # check if the specified model name is valid
@@ -146,7 +148,10 @@ class Models():
 
         if self.TRAINING_TYPE == 'freeze_some':
             # check if number_of_layers_to_freeze is more than model layers
-            if number_of_layers_to_freeze > len(model_final.layers): number_of_layers_to_freeze = len(model_final.layers)
+            if self.NUMBER_LAYER_FREEZE > len(model_final.layers):
+                number_of_layers_to_freeze = len(model_final.layers)
+            else:
+                number_of_layers_to_freeze =  self.NUMBER_LAYER_FREEZE
 
             # freeze mentioned model layers
             for layer in model_final.layers[:number_of_layers_to_freeze]:

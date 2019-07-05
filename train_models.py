@@ -96,7 +96,7 @@ class ModelTraining(Models):
 
         # kerasModels constructor initialization
         super(ModelTraining, self).__init__(self.MODEL_NAME, self.TRAINING_TYPE, self.NUMBER_OF_CLASSES,
-                                            self.IMG_HEIGHT, self.IMG_WIDTH)
+                                            self.IMG_HEIGHT, self.IMG_WIDTH, NUMBER_OF_LAYERS_TO_FREEZE)
         # logs folder name
         if ITERATION_NAME != "":
             self.MODEL_NAME = ITERATION_NAME + "_" + model_name

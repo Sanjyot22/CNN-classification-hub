@@ -8,6 +8,7 @@ import pandas as pd
 from PIL import Image
 from tqdm import tqdm
 from PIL import ImageOps
+from config import NUMBER_OF_LAYERS_TO_FREEZE
 from pandas_ml import ConfusionMatrix
 from tensorflow.keras.models import load_model
 from create_model_architectures import Models
@@ -41,7 +42,7 @@ class DoPredictions(Models):
 
         # kerasModels constructor initialization
         super(DoPredictions, self).__init__(self.MODEL_NAME, self.TRAINING_TYPE, self.NUMBER_OF_CLASSES,
-                                            self.height, self.width)
+                                            self.height, self.width, NUMBER_OF_LAYERS_TO_FREEZE)
 
     def load_model_h5(self, hdf5_filename):
         """
@@ -225,7 +226,11 @@ class DoPredictions(Models):
             image_predictions.append(labled_pred)
 
         # calculating accuracies
-        accuracy, precision, recall, accuracy_threshold =self.calculate_accuracy(image_predictions, image_annotations, image_confidences, threshold)
+        accuracy, precision, recall, accuracy_threshold = self.calculate_accuracy(image_predictions,
+                                                                                  image_annotations,
+                                                                                  image_confidences,
+                                                                                  threshold)
+
         # restructuring prediction, annotation and confidences
         df_result = pd.DataFrame(
             list(zip(image_paths,image_names,image_annotations,image_predictions,image_confidences)),
