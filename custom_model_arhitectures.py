@@ -1,7 +1,8 @@
 import tensorflow as tf
 import tensorflow.keras as keras
 
-class customModels():
+
+class CustomModels():
     """
     Class used to create custom cnn-architecture.
     """

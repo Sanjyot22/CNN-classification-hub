@@ -17,29 +17,33 @@ ITERATION_NAME = ""
 
 # path to training and validation directory
 # path to training directory. Classes wise folders of images
-TRAIN_DIR = "./training_data"
+TRAIN_DIR = "/Users/sanjyotzade/Documents/datasets/sample_training_images/training_data"
 
 # path to validation directory. Classes wise folders of images
-VALID_DIR = "./testing_data"
+VALID_DIR = "/Users/sanjyotzade/Documents/datasets/sample_training_images/testing_data"
 
 # Initializing model parameters
-IMG_HEIGHT = None  # if None, default input image size as per model will be used
-IMG_WIDTH = None  # if None, default input image size as per model will be used
+IMG_HEIGHT = 64  # if None, default input image size as per model will be used
+
+IMG_WIDTH = 64  # if None, default input image size as per model will be used
+
 MODEL_NAME = "vgg16"  # specify the model name from above list
-# if "imagenet" then imagenet trained weight intialization is used for keras model.
+
+# if "imagenet" then imagenet trained weight initialization is used for the model.
 # However, in order to re-start training weights path can be specified here.
 WEIGHTS = "imagenet"
+
 SAVE_LOCATION = "./"  # path to folder where model weights and logs will be saved
+
 EPOCHS = 3  # number of epochs to train
+
 BATCH_SIZE = 32  # batch size of training
-CLEAR_LOGS = False  # if True, will clear model training logs & weights from the folder
-# Note: if re-starting model training the make sure that earlier weights are preserved by keeping "CLEAR_LOGS=False"
-# Note: when re-starting model training with "CLEAR_LOGS=True".
-#       1. If restarting from earlier saved weights those weights will not be deleted, everything else will be deleted
-#       2. If restarting model training from beginning then everything in the folder will be deleted.
-# Note: Model logs are only delete as per model name. If training a model with new name & "CLEAR_LOGS=True" then
-#       then weights & logs other earlier model name will not be deleted.
-TRAINING_TYPE = "train_all"
+
+START_TRAINING = True  # if False, model summary & pre-training parameters will be displayed. "True" to start training.
+
+POST_EVALUATION = True  # if False, post-training evaluation (elaborated in READ.ME) will be not be done
+
+TRAINING_TYPE = "freeze_some"
 # There are three modes of training available:
 # ["train_all","freeze_some","freeze_all"]
 """
@@ -47,7 +51,7 @@ Model is created by using architecture from keras application model and adding 2
 
 1. "train_all":
     This mode trains all the  model layers as well as added 2 dense layers. 
- 
+
 2. "freeze_some":
     This mode will freeze some of the layers in model(number of layers to freeze can be specified). 
     Rest of the  model layers and  2 dense layers will be trained. 
@@ -55,6 +59,15 @@ Model is created by using architecture from keras application model and adding 2
 3. "freeze_all":
     None of the model layers will be trained. Only added last 2 dense layers will be trained.
 """
+NUMBER_OF_LAYERS_TO_FREEZE = 7  # if TRAINING_TYPE = "freeze_some"
+
+CLEAR_LOGS = True  # if True, will clear model training logs & weights from the folder
+# Note: if re-starting model training the make sure that earlier weights are preserved by keeping "CLEAR_LOGS=False"
+# Note: when re-starting model training with "CLEAR_LOGS=True".
+#       1. If restarting from earlier saved weights those weights will not be deleted, everything else will be deleted
+#       2. If restarting model training from beginning then everything in the folder will be deleted.
+# Note: Model logs are only delete as per model name. If training a model with new name & "CLEAR_LOGS=True" then
+#       then weights & logs other earlier model name will not be deleted.
 
 
 
@@ -79,11 +92,16 @@ LOSS = "categorical_crossentropy"
 #
 # ["sgd", "adam", "adagrad", "adadelta", "rmsprop", "rmsprop", "nadam"]
 # Note: default parameters for optimizers will be used
-OPTIMIZER = "sgd"
+OPTIMIZER = "adam"
 
 # To introduce early stopping
-EARLY_STOPPING = True
-# if "EARLY_STOPPING = True"
+EARLY_STOPPING = True # if "EARLY_STOPPING = True", below parameters.
+ES_MONITOR='val_accuracy'
+ES_MIN_DELTA=0
+ES_PATIENCE=8
+ES_VERBOSE=1
+ES_MODE='auto'
+ES_RESTORE_BEST_WEIGHTS=True
 # Arguments
 # - ES_MONITOR: quantity to be monitored.
 # - ES_MIN_DELTA: minimum change in the monitored quantity to qualify as an improvement,
@@ -95,12 +113,6 @@ EARLY_STOPPING = True
 #   automatically inferred from the name of the monitored quantity.
 # - ES_RESTORE_BEST_WEIGHTS: whether to restore model weights from the epoch with best value of the monitored quantity.
 #   If False, the model weights obtained at the last step of training are used.
-ES_MONITOR='val_accuracy'
-ES_MIN_DELTA=0
-ES_PATIENCE=8
-ES_VERBOSE=1
-ES_MODE='auto'
-ES_RESTORE_BEST_WEIGHTS=True
 
 
 # Which value to be monitored for weight saving
@@ -117,3 +129,6 @@ VERBOSE = 1  # Integer. 0, 1, or 2. Verbosity mode. 0 = silent, 1 = progress bar
 # To show final model training plot as a graph
 # This graph will also be saved in model repository
 SHOW = False  # if True, after model training, graph will be displayed
+
+# POST EVALUATION THRESHOLD
+

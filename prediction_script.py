@@ -10,17 +10,17 @@ from tqdm import tqdm
 from PIL import ImageOps
 from pandas_ml import ConfusionMatrix
 from tensorflow.keras.models import load_model
-from create_keras_model_architectures import kerasModels
+from create_model_architectures import Models
 warnings.filterwarnings("ignore")
 
-class do_predictions():
 
+class DoPredictions(Models):
     """
     This class is used to do image level prediction on validation data post model training.
     Same code can be used for inferencing with trained weights, for pratical predictions.
     """
 
-    def __init__(self,img_height,img_width,model_name,training_type,nclasses):
+    def __init__(self, img_height, img_width, model_name, training_type, nclasses):
         """
         Constructor to define parameters for model prediction.
 
@@ -38,6 +38,10 @@ class do_predictions():
         self.MODEL_NAME = model_name
         self.TRAINING_TYPE = training_type
         self.NUMBER_OF_CLASSES = nclasses
+
+        # kerasModels constructor initialization
+        super(DoPredictions, self).__init__(self.MODEL_NAME, self.TRAINING_TYPE, self.NUMBER_OF_CLASSES,
+                                            self.height, self.width)
 
     def load_model_h5(self, hdf5_filename):
         """
@@ -58,11 +62,11 @@ class do_predictions():
             Creating architecture separately and loading
             """)
             # creating the architecture and loading weights
-            model , w , h = kerasModels(self.MODEL_NAME, self.TRAINING_TYPE, self.NUMBER_OF_CLASSES).create_model_base()
+            model, w, h = self.create_model_base()
             model.load(hdf5_filename)
         return model
 
-    def load_labels(self,path_to_datasets_with_labels_folders):
+    def load_labels(self, path_to_datasets_with_labels_folders):
         """
         creates class labels used in training from validation directory.
 
@@ -111,7 +115,7 @@ class do_predictions():
         image_data = test_img.reshape(1, self.height, self.width, 3) / 255
         return image_data
 
-    def calculate_accuracy(self,results,annotations,confidences,accuracy_threshold):
+    def calculate_accuracy(self, results, annotations, confidences, accuracy_threshold):
         """
         This function is used to calculate accuracy, precision and recall.
 
@@ -164,7 +168,7 @@ class do_predictions():
         print (ConfusionMatrix(annotations,results))
         return accuracy,precision,recall,accuracy_threshold
 
-    def do_predictions_while_training(self,input_image_dir_path,weights_file_path,threshold = 0):
+    def do_predictions_while_training(self, input_image_dir_path, weights_file_path, threshold=0):
         """
         This function is used initiate model predictions w.r.t given weights.
 
@@ -202,7 +206,7 @@ class do_predictions():
         print ("Starting prediction on test images...")
         for image_path in tqdm(glob.glob(input_image_dir_path + '/**/*')):
 
-            # laoding an image
+            # loading an image
             test_img = self.load_image_file(image_path)
 
             # model prediction
@@ -223,8 +227,11 @@ class do_predictions():
         # calculating accuracies
         accuracy, precision, recall, accuracy_threshold =self.calculate_accuracy(image_predictions, image_annotations, image_confidences, threshold)
         # restructuring prediction, annotation and confidences
-        df_result = pd.DataFrame(list(zip(image_paths,image_names,image_annotations,image_predictions,image_confidences)),
-                         columns=['image_path', 'Image_name', 'Actual_annotation', 'Image_prediction','Image_confidence' ])
+        df_result = pd.DataFrame(
+            list(zip(image_paths,image_names,image_annotations,image_predictions,image_confidences)),
+            columns=['image_path', 'Image_name', 'Actual_annotation', 'Image_prediction','Image_confidence']
+        )
+
         # cleaning model variables
         del model
         for i in range(3):
