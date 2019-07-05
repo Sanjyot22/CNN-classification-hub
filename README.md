@@ -24,7 +24,7 @@ python run_model.py -dtrain <path to train dir> -dvalid <path to test/validation
 ```
 
 other model names:
-**'xception', 'vgg16', 'vgg19', 'resnet50', 'inceptionv3', 'inceptionresnetv2', 'nasnet_small','nasnet_large', 'densenet121', 'densenet169', 'densenet201', 'mobilenet'**
+**'xception', 'vgg16', 'vgg19', 'resnet50', 'inceptionv3', 'inceptionresnetv2', 'nasnet_small', 'nasnet_large', 'densenet121', 'densenet169', 'densenet201', 'mobilenet'**
 
 (refer "config.py" for further details on more parameters)
 
