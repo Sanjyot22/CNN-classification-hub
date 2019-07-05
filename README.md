@@ -24,11 +24,31 @@ python run_model.py -dtrain <path to train dir> -dvalid <path to test/validation
 ```
 
 Note:
-- Validation/test dataset is **must** for model training with the hub. 
+- Validation/test dataset is **must** for model training with the hub.
+- Current hub only supports **"jpg"** images for model training
 - Names of category folder in both train and validation/test folder should be exactly same.
 - Names of the category folder will be used as tag for that particular class.
 - Above commands has only a few required parameters. Description about every dynamic parameter is briefed in "config.py".
 - Edit the default parameters in "config.py" or pass them as run-time arguments as above.
+- **Class-level image folder structure** is mentioned below:
+```
+dataset
+├── train
+│   ├── class_1
+│   |    ├── <images for class_1>
+│   ├── class_2
+│   |    ├── <images for class_2>
+│   ├── class_3
+│   |    ├── <images for class_3>
+|   |   
+│   test
+│   ├── class_1
+│   |    ├── <images for class_1>
+│   ├── class_2
+│   |    ├── <images for class_2>
+│   ├── class_3
+│   |    ├── <images for class_3>
+```
 
 ## Expected results
 
@@ -49,7 +69,7 @@ model_repository
 + "model_logs" folder keeps all the saved weight after every model training epoch. This folder also has a csv w.r.t to each weight. This is the evaluation csv containing prediction on validation dataset using the corresponding weights. 
 + "tensor_logs" folde keeps all the tensorboard logs.
 + "training.log" file has all the model training statistics for each trained epoch.
-+ "<model name>_stats.png" is the graph dislaying model training statistics (both training and testing/validation)
++ "< model name >_stats.png" is the graph dislaying model training statistics (both training and testing/validation)
 + "index_class_mapping.json" is a dictionary containing index to label mapping for each category trained. 
 
 **Available models**
@@ -67,5 +87,15 @@ model_repository
 ├── Densenet169
 └── Densenet201
 ```
+
+## Understanding the workflow
+
+As mentioned earlier the entire workflow has three major phases
+
+**Model architecture creation**
+
+**Model training on specified architecture**
+
+**Analyzing best weights from all the saved weights**
 
 [![Love](https://forthebadge.com/images/badges/built-with-love.svg)](https://github.com/Sanjyot22/CNN-classification-hub)
