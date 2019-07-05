@@ -1,4 +1,6 @@
 import sys
+from config import NUM_NODES
+from config import NUM_DROPOUTS
 from tensor_hub_code.classifiers import VGG16
 from tensor_hub_code.classifiers import VGG19
 from tensor_hub_code.classifiers import MobileNet
@@ -52,20 +54,21 @@ class Models():
         if (self.HEIGHT != None) and (self.WIDTH != None):
             model_obj = eval(model_name)(
                 n_classes=self.NUMBER_OF_CLASSES, img_height=self.HEIGHT, img_width=self.WIDTH,
-                num_nodes=None, dropouts=None, activation="relu"
+                num_nodes=NUM_NODES, dropouts=NUM_DROPOUTS, activation="relu"
             )
         elif self.HEIGHT:
             model_obj = eval(model_name)(
-                n_classes=self.NUMBER_OF_CLASSES, img_height=self.HEIGHT, num_nodes=None,
-                dropouts=None, activation="relu"
+                n_classes=self.NUMBER_OF_CLASSES, img_height=self.HEIGHT, num_nodes=NUM_NODES,
+                dropouts=NUM_DROPOUTS, activation="relu"
             )
         elif self.WIDTH:
             model_obj = eval(model_name)(
-                n_classes=self.NUMBER_OF_CLASSES, img_width=self.WIDTH, num_nodes=None,
-                dropouts=None, activation="relu"
+                n_classes=self.NUMBER_OF_CLASSES, img_width=self.WIDTH, num_nodes=NUM_NODES,
+                dropouts=NUM_DROPOUTS, activation="relu"
             )
         else:
-            model_obj = eval(model_name)(n_classes=self.NUMBER_OF_CLASSES, num_nodes=None, dropouts=None, activation="relu")
+            model_obj = eval(model_name)(n_classes=self.NUMBER_OF_CLASSES, num_nodes=NUM_NODES,
+                                         dropouts=NUM_DROPOUTS, activation="relu")
 
         return model_obj
 

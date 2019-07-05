@@ -94,6 +94,13 @@ LOSS = "categorical_crossentropy"
 # Note: default parameters for optimizers will be used
 OPTIMIZER = "adam"
 
+# Number of fully connected layers to add after pre-trained model
+# As many values in NUM_NODES that many fully connected layers will be added after pre-trained model
+# "NUM_DROPOUTS" specifies number of dropouts after each fully connected layers
+# LENGTH OF NUM_NODES should be equal to LENGTH OF NUM_DROPOUTS (i.e dropout values w.r.t to each layer)
+NUM_NODES = [1024, 512]  # if None, default values will be used. Integers should be added.
+NUM_DROPOUTS = [0.5, 0.5]  # if None, default values will be used. Float 0<num<1 should be added.
+
 # To introduce early stopping
 EARLY_STOPPING = True # if "EARLY_STOPPING = True", below parameters.
 ES_MONITOR='val_accuracy'
@@ -113,7 +120,6 @@ ES_RESTORE_BEST_WEIGHTS=True
 #   automatically inferred from the name of the monitored quantity.
 # - ES_RESTORE_BEST_WEIGHTS: whether to restore model weights from the epoch with best value of the monitored quantity.
 #   If False, the model weights obtained at the last step of training are used.
-
 
 # Which value to be monitored for weight saving
 SAVING_METRIC = "val_accuracy"  # either of ["val_accuracy", "val_loss"]
