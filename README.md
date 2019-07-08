@@ -31,6 +31,7 @@ Note:
 - Validation/test dataset is **must** for model training with the hub.
 - Names of category folder in both train and validation/test folder should be exactly same.
 - Names of the category folder will be used as tag for that particular class.
+- There should not be any extra/folder present in training/validation folder(remove hidden folders too).
 - Description about every dynamic parameter is briefed in "config.py".
 - Edit the default parameters in "config.py" or pass them as run-time arguments as above.
 - **Class-level image folder structure** is mentioned below:
