@@ -13,6 +13,7 @@ keras_models= ['xception', 'vgg16', 'vgg19', 'resnet50', 'inceptionv3',
 
 # This is an identifier for training iteration name. This will be used as prefix to model logs folder.
 # If not mentioned name of model logs folder will be same as "model name" used for training.
+# REMEMBER TO CHANGE THIS NAME DURING DIFFERENT MODEL TRAINING ITERATIONS (of the same model).
 ITERATION_NAME = ""
 
 # path to training and validation directory
@@ -39,9 +40,10 @@ EPOCHS = 3  # number of epochs to train
 
 BATCH_SIZE = 32  # batch size of training
 
+# START_TRAINING parameter is mostly utilised to check pre-modeling parameters and model architecture check.
 START_TRAINING = True  # if False, model summary & pre-training parameters will be displayed. "True" to start training.
 
-POST_EVALUATION = True  # if False, post-training evaluation (elaborated in READ.ME) will be not be done
+POST_EVALUATION = True  # if False, post-training evaluation(elaborated in READ.ME) will be not be done.
 
 TRAINING_TYPE = "freeze_some"
 # There are three modes of training available:
@@ -61,6 +63,9 @@ Model is created by using architecture from keras application model and adding 2
 """
 NUMBER_OF_LAYERS_TO_FREEZE = 7  # if TRAINING_TYPE = "freeze_some"
 
+######################################   Advanced Model Training Parameters   ##########################################
+
+
 CLEAR_LOGS = True  # if True, will clear model training logs & weights from the folder
 # Note: if re-starting model training the make sure that earlier weights are preserved by keeping "CLEAR_LOGS=False"
 # Note: when re-starting model training with "CLEAR_LOGS=True".
@@ -69,9 +74,6 @@ CLEAR_LOGS = True  # if True, will clear model training logs & weights from the 
 # Note: Model logs are only delete as per model name. If training a model with new name & "CLEAR_LOGS=True" then
 #       then weights & logs other earlier model name will not be deleted.
 
-
-
-######################################   Advanced Model Training Parameters   ##########################################
 # Available loss functions for categorical classification
 #
 # Best practices for loss usage
@@ -103,12 +105,12 @@ NUM_DROPOUTS = [0.5, 0.5]  # This default value will add 2 dropout layers after 
 
 # To introduce early stopping
 EARLY_STOPPING = True # if "EARLY_STOPPING = True", below parameters.
-ES_MONITOR='val_accuracy'
-ES_MIN_DELTA=0
-ES_PATIENCE=8
-ES_VERBOSE=1
-ES_MODE='auto'
-ES_RESTORE_BEST_WEIGHTS=True
+ES_MONITOR = 'val_accuracy'
+ES_MIN_DELTA = 0
+ES_PATIENCE = 8
+ES_VERBOSE = 1
+ES_MODE = 'auto'
+ES_RESTORE_BEST_WEIGHTS = True
 # Arguments
 # - ES_MONITOR: quantity to be monitored.
 # - ES_MIN_DELTA: minimum change in the monitored quantity to qualify as an improvement,
@@ -137,4 +139,5 @@ VERBOSE = 1  # Integer. 0, 1, or 2. Verbosity mode. 0 = silent, 1 = progress bar
 SHOW = False  # if True, after model training, graph will be displayed
 
 # POST EVALUATION THRESHOLD
-
+HOW_MANY_WEIGHTS_TO_TEST = 8  # How many best weights are to be evaluated for post-training analysis
+ACCURACY_THRESHOLD = 0.8  # Accuracy above which predictions will be considered correct, for precision-recall calc.

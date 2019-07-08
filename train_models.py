@@ -94,13 +94,15 @@ class ModelTraining(Models):
         # define model to be created
         self.model_final = ""
 
-        # kerasModels constructor initialization
+        # Models constructor initialization
         super(ModelTraining, self).__init__(self.MODEL_NAME, self.TRAINING_TYPE, self.NUMBER_OF_CLASSES,
                                             self.IMG_HEIGHT, self.IMG_WIDTH, NUMBER_OF_LAYERS_TO_FREEZE)
         # logs folder name
         if ITERATION_NAME != "":
+            self.MODEL_NAME_ = model_name
             self.MODEL_NAME = ITERATION_NAME + "_" + model_name
         else:
+            self.MODEL_NAME_ = model_name
             self.MODEL_NAME = model_name
 
     def __clear_logs__(self):
@@ -129,10 +131,17 @@ class ModelTraining(Models):
         """
         This function creates model logs folders.
         """
+
         # create folder to save model logs as per model name
         model_log_folder = os.path.join(self.SAVE_LOC,'model_repository', self.MODEL_NAME,'model_logs')
         if not os.path.exists(model_log_folder):
             os.makedirs(model_log_folder)
+        else:
+            if os.listdir(model_log_folder):
+                print("\nDirectory: {}\n is not empty. Delete n restart".format(model_log_folder))
+                print("                  or")
+                print("Change 'ITERATION_NAME' parameter in config.py\n")
+                sys.exit()
 
         # create folder to save tensorboard logs as per model name
         tensor_log_folder = os.path.join(self.SAVE_LOC,'model_repository', self.MODEL_NAME,'tensor_logs')
@@ -268,16 +277,19 @@ class ModelTraining(Models):
         """
         print()
         print("Pre-training report:")
+        print('iteration_name: '+ITERATION_NAME)
         print('data_dir_train: ', self.TRAIN_DIR)
         print('data_dir_valid: ', self.VALID_DIR)
         print('save_location:', os.path.join(self.SAVE_LOC, "model_repository/"))
         print("classes: {}".format(self.CLASSES))
-        print('model_name: ', self.MODEL_NAME)
+        print('model_name: ', self.MODEL_NAME_)
         print('(width,height): {}'.format(self.IMG_WIDTH, self.IMG_HEIGHT))
         print('# epochs: ', self.EPOCHS)
         print('batch_size:', self.BATCHSIZE)
         print('training_type:', self.TRAINING_TYPE)
         print('weights: ', self.WEIGHTS)
+        print('start_training: '+START_TRAINING)
+        print('post_evaluation: '+POST_EVALUATION)
         print()
 
     def __plot_model_training_history__(self, history_dict, plot_val=True, chart_type="--o"):
@@ -357,7 +369,9 @@ class ModelTraining(Models):
         list_of_epochs = best_weights["epoch"].tolist()
         return list_of_epochs
 
-    def find_best_weights_from_all_epochs(self,img_height, img_width, how_many_best_weights = 8):
+    def find_best_weights_from_all_epochs(self,img_height, img_width,
+                                          how_many_best_weights=HOW_MANY_WEIGHTS_TO_TEST,
+                                          accuracy_threshold=ACCURACY_THRESHOLD):
         """
         This functions is used to identify best validation accuracy weights and re-run this weights on test data.
         This is required because during training the validation accuracy that is broadcasted is with batch norma-
@@ -369,6 +383,7 @@ class ModelTraining(Models):
         img_height {int} --  input height of the images
         img_width {int} --  input width of the images
         how_many_best_weights {int} -- number of best weights to be picked for re-evaluation
+        accuracy_threshold {float} -- accuracy above which prediction will be considered correct
         """
         # variable initialization
         model_folder = os.path.join(self.SAVE_LOC,"model_repository",self.MODEL_NAME)
@@ -403,7 +418,7 @@ class ModelTraining(Models):
             print("images folder: {}".format(path_validation_images))
             # doing prediction on a weight
             structured_results, stats = prediction_object.do_predictions_while_training(
-                path_validation_images, weight_file_path, 0)
+                path_validation_images, weight_file_path, accuracy_threshold)
             path_to_csv = os.path.join(model_folder, "model_logs", str(weights_name)+".csv")
             structured_results.to_csv(path_to_csv ,index=False)
             print ("Result for weight {} saved to {}\n".format(weights_name, path_to_csv))
@@ -416,13 +431,13 @@ class ModelTraining(Models):
                 "recall":stats[2],
                 "confidence_threshold":stats[3]
             }
-            analysis_df = analysis_df.append(stats_dict,ignore_index=True)
+            analysis_df = analysis_df.append(stats_dict, ignore_index=True)
 
         # saving the final report
-        print ("Analysis report:\n")
+        print("Analysis report:\n")
         path_to_report = os.path.join(model_folder, "analysis_report.csv")
         analysis_df.to_csv(path_to_report, index=False)
-        print (analysis_df, "\n")
+        print(analysis_df, "\n")
 
     def train(self):
         """
@@ -466,7 +481,7 @@ class ModelTraining(Models):
             print ("Model Training complete !\n")
 
             if POST_EVALUATION:
-                self.find_best_weights_from_all_epochs(img_height,img_width)
+                self.find_best_weights_from_all_epochs(img_height, img_width)
 
         return os.path.join(self.SAVE_LOC, "model_repository", self.MODEL_NAME)
 

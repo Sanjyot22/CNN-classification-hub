@@ -120,6 +120,9 @@ class Models():
         elif self.MODELNAME.lower() == 'mobilenet':
             model_obj = self.__model_call__(model_name="MobileNet")
 
+        else:
+            print("Model name '{}' not in the list".format(self.MODELNAME))
+            sys.exit()
         return model_obj
 
     def create_model_base(self):
@@ -154,7 +157,7 @@ class Models():
             if self.NUMBER_LAYER_FREEZE > len(model_final.layers):
                 number_of_layers_to_freeze = len(model_final.layers)
             else:
-                number_of_layers_to_freeze =  self.NUMBER_LAYER_FREEZE
+                number_of_layers_to_freeze = self.NUMBER_LAYER_FREEZE
 
             # freeze mentioned model layers
             for layer in model_final.layers[:number_of_layers_to_freeze]:
@@ -177,4 +180,3 @@ class Models():
             sys.exit()
 
         return model_final, img_height, img_width
-
