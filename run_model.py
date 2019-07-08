@@ -15,7 +15,6 @@ if __name__ == '__main__':
     optional.add_argument('-width', '--width', default=IMG_WIDTH, help='width of the input image to model')
     optional.add_argument('-e', '--epochs', default=EPOCHS, type=int, help='Number of epochs')
     optional.add_argument('-b', '--batch_size', default=BATCH_SIZE, type=int, help = 'Batch-size')
-    optional.add_argument('-clear', '--clear', default=CLEAR_LOGS, help='Clear earlier model logs')
     optional.add_argument('-tt', '--training_type', default=TRAINING_TYPE, help="[train_all,freeze_some,freeze_all]")
     optional.add_argument('-w', '--weights', default=WEIGHTS, help='weights imagenet or custom')
     optional.add_argument('-start', '--start_train', default=True, help='bool referring to start model training')
@@ -33,7 +32,6 @@ if __name__ == '__main__':
         args.training_type,
         args.save_loc,
         args.weights,
-        args.clear,
         args.start_train
     )
     output_string = training_object.train()

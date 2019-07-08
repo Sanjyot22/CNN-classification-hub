@@ -30,7 +30,7 @@ class ModelTraining(Models):
     """
 
     def __init__(self, data_dir_train, data_dir_valid, batch_size, epochs, model_name, height,
-                 width, training_type, save_loc, weights, clear, start_train):
+                 width, training_type, save_loc, weights, start_train):
         """
         Constructor to define parameters for model training and clear the logs, if specified.
 
@@ -87,9 +87,9 @@ class ModelTraining(Models):
             'densenet121', 'densenet169', 'densenet201', 'mobilenet', 'micro_exp_net'
         ]
 
-        # clears the earlier model training logs
-        if str(clear) == "True":
-            self.__clear_logs__()
+        # # clears the earlier model training logs
+        # if str(clear) == "True":
+        #     self.__clear_logs__()
 
         # define model to be created
         self.model_final = ""
@@ -138,7 +138,7 @@ class ModelTraining(Models):
             os.makedirs(model_log_folder)
         else:
             if os.listdir(model_log_folder):
-                print("\nDirectory: {}\n is not empty. Delete n restart".format(model_log_folder))
+                print("\nDirectory: {},\nis not empty. Delete and restart".format(model_log_folder))
                 print("                  or")
                 print("Change 'ITERATION_NAME' parameter in config.py\n")
                 sys.exit()
@@ -288,8 +288,8 @@ class ModelTraining(Models):
         print('batch_size:', self.BATCHSIZE)
         print('training_type:', self.TRAINING_TYPE)
         print('weights: ', self.WEIGHTS)
-        print('start_training: '+START_TRAINING)
-        print('post_evaluation: '+POST_EVALUATION)
+        print('start_training: '+str(START_TRAINING))
+        print('post_evaluation: '+str(POST_EVALUATION))
         print()
 
     def __plot_model_training_history__(self, history_dict, plot_val=True, chart_type="--o"):

@@ -65,15 +65,6 @@ NUMBER_OF_LAYERS_TO_FREEZE = 7  # if TRAINING_TYPE = "freeze_some"
 
 ######################################   Advanced Model Training Parameters   ##########################################
 
-
-CLEAR_LOGS = True  # if True, will clear model training logs & weights from the folder
-# Note: if re-starting model training the make sure that earlier weights are preserved by keeping "CLEAR_LOGS=False"
-# Note: when re-starting model training with "CLEAR_LOGS=True".
-#       1. If restarting from earlier saved weights those weights will not be deleted, everything else will be deleted
-#       2. If restarting model training from beginning then everything in the folder will be deleted.
-# Note: Model logs are only delete as per model name. If training a model with new name & "CLEAR_LOGS=True" then
-#       then weights & logs other earlier model name will not be deleted.
-
 # Available loss functions for categorical classification
 #
 # Best practices for loss usage
@@ -141,3 +132,12 @@ SHOW = False  # if True, after model training, graph will be displayed
 # POST EVALUATION THRESHOLD
 HOW_MANY_WEIGHTS_TO_TEST = 8  # How many best weights are to be evaluated for post-training analysis
 ACCURACY_THRESHOLD = 0.8  # Accuracy above which predictions will be considered correct, for precision-recall calc.
+
+# Not applicable parameter
+# CLEAR_LOGS = True  # if True, will clear model training logs & weights from the folder
+# Note: if re-starting model training the make sure that earlier weights are preserved by keeping "CLEAR_LOGS=False"
+# Note: when re-starting model training with "CLEAR_LOGS=True".
+#       1. If restarting from earlier saved weights those weights will not be deleted, everything else will be deleted
+#       2. If restarting model training from beginning then everything in the folder will be deleted.
+# Note: Model logs are only delete as per model name. If training a model with new name & "CLEAR_LOGS=True" then
+#       then weights & logs other earlier model name will not be deleted.
