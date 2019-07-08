@@ -34,10 +34,10 @@ Note:
 - There should not be any extra/folder present in training/validation folder(remove hidden folders too).
 - Description about every dynamic parameter is briefed in "config.py".
 - Edit the default parameters in "config.py" or pass them as run-time arguments as above.
-- **Class-level image folder structure** is mentioned below:
 
 (refer "config.py" for further details on more parameters)
 
+**training-validation/test data class-level image folder structure**
 ```
 dataset
 ├── train
