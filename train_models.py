@@ -1,7 +1,8 @@
 # import  python Libraries
 import os
-import json
 import sys
+import glob
+import json
 import math
 import shutil
 import warnings
@@ -46,19 +47,19 @@ class ModelTraining(Models):
             clear {boolean} -- whether to clear earlier model training logs and weights.
         """
         # assign all the model training parameters as per config file
-        self.TRAIN_DIR = data_dir_train
-        self.VALID_DIR = data_dir_valid
-        self.SAVE_LOC = save_loc
-        self.BATCHSIZE = batch_size
-        self.EPOCHS = epochs
+        self.TRAIN_DIR = str(data_dir_train)
+        self.VALID_DIR = str(data_dir_valid)
+        self.SAVE_LOC = str(save_loc)
+        self.BATCHSIZE = int(batch_size)
+        self.EPOCHS = int(epochs)
         self.IMG_HEIGHT = height
         self.IMG_WIDTH = width
-        self.TRAINING_TYPE = training_type
+        self.TRAINING_TYPE = str(training_type)
         self.WEIGHTS = weights
-        self.MODEL_NAME = model_name
+        self.MODEL_NAME = str(model_name)
 
         # convert to boolean
-        self.START_TRAIN = False if start_train == "False" else True
+        self.START_TRAIN = False if str(start_train) == "False" else True
 
         # check the paths are valid
         if not os.path.exists(self.TRAIN_DIR): print ("\nInvalid training path\n"); sys.exit();
@@ -99,11 +100,11 @@ class ModelTraining(Models):
                                             self.IMG_HEIGHT, self.IMG_WIDTH, NUMBER_OF_LAYERS_TO_FREEZE)
         # logs folder name
         if ITERATION_NAME != "":
-            self.MODEL_NAME_ = model_name
-            self.MODEL_NAME = ITERATION_NAME + "_" + model_name
+            self.MODEL_NAME_ = model_name  # This model name is used for architecture definitions parameter
+            self.MODEL_NAME = ITERATION_NAME + "_" + model_name  # This model name is used for logs repositories
         else:
-            self.MODEL_NAME_ = model_name
-            self.MODEL_NAME = model_name
+            self.MODEL_NAME_ = model_name  # This model name is used for architecture definitions parameter
+            self.MODEL_NAME = model_name  # This model name is used for logs repositories
 
     def __clear_logs__(self):
         """
@@ -116,7 +117,7 @@ class ModelTraining(Models):
             weight_folder, weight_name = os.path.split(self.WEIGHTS)
 
         # delete all the model logs as per model name
-        model_log_folder = os.path.join(self.SAVE_LOC,'model_repository',self.MODEL_NAME)
+        model_log_folder = os.path.join(self.SAVE_LOC,'model_repository', self.MODEL_NAME)
         if os.path.exists(model_log_folder):
             shutil.rmtree(model_log_folder)
 
@@ -133,18 +134,18 @@ class ModelTraining(Models):
         """
 
         # create folder to save model logs as per model name
-        model_log_folder = os.path.join(self.SAVE_LOC,'model_repository', self.MODEL_NAME,'model_logs')
+        model_log_folder = os.path.join(self.SAVE_LOC,'model_repository', self.MODEL_NAME, 'model_logs')
         if not os.path.exists(model_log_folder):
             os.makedirs(model_log_folder)
         else:
-            if os.listdir(model_log_folder):
+            if os.listdir(model_log_folder) and (self.START_TRAIN==True):
                 print("\nDirectory: {},\nis not empty. Delete and restart".format(model_log_folder))
                 print("                  or")
                 print("Change 'ITERATION_NAME' parameter in config.py\n")
                 sys.exit()
 
         # create folder to save tensorboard logs as per model name
-        tensor_log_folder = os.path.join(self.SAVE_LOC,'model_repository', self.MODEL_NAME,'tensor_logs')
+        tensor_log_folder = os.path.join(self.SAVE_LOC,'model_repository', self.MODEL_NAME, 'tensor_logs')
         if not os.path.exists(tensor_log_folder):
             os.makedirs(tensor_log_folder)
         return
@@ -160,7 +161,7 @@ class ModelTraining(Models):
         """
         # getting the model architecture
 
-        if (self.MODEL_NAME in self.keras_models):
+        if self.MODEL_NAME_ in self.keras_models:
             model_final, img_width, img_height = self.create_model_base()
         else:
             print("Please specify the model name from the available list")
@@ -169,7 +170,7 @@ class ModelTraining(Models):
 
         # for training to re-start
         # loading the weights from earlier iteration
-        if self.WEIGHTS != "imagenet":
+        if self.WEIGHTS not in ["imagenet", None]:
             model_final = load_model(self.WEIGHTS)
 
         # final model summary
@@ -189,7 +190,7 @@ class ModelTraining(Models):
         """
 
         # model compilation definitions
-        self.model_final.compile(loss=LOSS, optimizer=OPTIMIZER,metrics=["accuracy"])
+        self.model_final.compile(loss=LOSS, optimizer=OPTIMIZER, metrics=["accuracy"])
 
         # define callbacks
         call_back_list = []
@@ -202,7 +203,7 @@ class ModelTraining(Models):
             call_back_list.append(self.early_stopping)
 
         # logging stats to a csv file
-        self.csv_logger = CSVLogger(os.path.join(self.SAVE_LOC, "model_repository",self.MODEL_NAME,"training.log"))
+        self.csv_logger = CSVLogger(os.path.join(self.SAVE_LOC, "model_repository", self.MODEL_NAME, "training.log"))
         call_back_list.append(self.csv_logger)
 
 
@@ -222,7 +223,7 @@ class ModelTraining(Models):
         # This callback will save the current weights after every epoch
         # The name of weight file contains epoch number, val accuracy
         file_path = os.path.join(
-            self.SAVE_LOC, "model_repository", self.MODEL_NAME,"model_logs",
+            self.SAVE_LOC, "model_repository", self.MODEL_NAME, "model_logs",
             "weights-{epoch:03d}-{val_accuracy:.4f}.h5"
                                  )
         checkpoints = ModelCheckpoint(
@@ -283,12 +284,12 @@ class ModelTraining(Models):
         print('save_location:', os.path.join(self.SAVE_LOC, "model_repository/"))
         print("classes: {}".format(self.CLASSES))
         print('model_name: ', self.MODEL_NAME_)
-        print('(width,height): {}'.format(self.IMG_WIDTH, self.IMG_HEIGHT))
+        print('(width,height): ({},{})'.format(self.IMG_WIDTH, self.IMG_HEIGHT))
         print('# epochs: ', self.EPOCHS)
         print('batch_size:', self.BATCHSIZE)
         print('training_type:', self.TRAINING_TYPE)
         print('weights: ', self.WEIGHTS)
-        print('start_training: '+str(START_TRAINING))
+        print('start_training: '+str(self.START_TRAIN))
         print('post_evaluation: '+str(POST_EVALUATION))
         print()
 
@@ -328,7 +329,8 @@ class ModelTraining(Models):
             axs[1].set_title('training accuracy')
 
         # save the graph and show
-        path_to_save_fig = os.path.join(self.SAVE_LOC, "model_repository", self.MODEL_NAME,self.MODEL_NAME+"_stats.png")
+        path_to_save_fig = os.path.join(self.SAVE_LOC, "model_repository",
+                                        self.MODEL_NAME, self.MODEL_NAME+"_stats.png")
         plt.savefig(path_to_save_fig)
         if SHOW:
             plt.show()
@@ -392,7 +394,8 @@ class ModelTraining(Models):
 
         # identify weights with best validation accuracy during training
         epochs_to_test = self.identify_best_validation_weights(log_file_path, how_many=how_many_best_weights)
-        weight_names = os.listdir(os.path.join(model_folder,"model_logs"))
+        # print (os.path.join(model_folder,"model_logs", "/*.h5"))
+        weight_names = glob.glob1(os.path.join(model_folder, "model_logs"), "*.h5")
         weights_to_test = [
             os.path.join(model_folder,"model_logs",weight_name)
             for epoch in epochs_to_test
@@ -401,11 +404,11 @@ class ModelTraining(Models):
         ]
 
         # starting re-evaluation
-        print ("Starting to analyze best weights on validation data")
+        print("Starting to analyze best weights on validation data")
         prediction_object = DoPredictions(
             img_height,
             img_width,
-            self.MODEL_NAME,
+            self.MODEL_NAME_,
             self.TRAINING_TYPE,
             self.NUMBER_OF_CLASSES
         )
@@ -480,8 +483,12 @@ class ModelTraining(Models):
             del self.model_final
             print ("Model Training complete !\n")
 
-            if POST_EVALUATION:
-                self.find_best_weights_from_all_epochs(img_height, img_width)
+        else:
+            print("\nChange 'START_TRAINING=TRUE' to begin training")
+
+        logs_folder = os.path.join(self.SAVE_LOC, 'model_repository', self.MODEL_NAME, 'model_logs')
+        if (POST_EVALUATION == True) and (len(os.listdir(logs_folder)) != 0):
+            self.find_best_weights_from_all_epochs(img_height, img_width)
 
         return os.path.join(self.SAVE_LOC, "model_repository", self.MODEL_NAME)
 

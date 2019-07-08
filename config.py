@@ -14,7 +14,7 @@ keras_models= ['xception', 'vgg16', 'vgg19', 'resnet50', 'inceptionv3',
 # This is an identifier for training iteration name. This will be used as prefix to model logs folder.
 # If not mentioned name of model logs folder will be same as "model name" used for training.
 # REMEMBER TO CHANGE THIS NAME DURING DIFFERENT MODEL TRAINING ITERATIONS (of the same model).
-ITERATION_NAME = ""
+ITERATION_NAME = "t"
 
 # path to training and validation directory
 # path to training directory. Classes wise folders of images
@@ -24,15 +24,15 @@ TRAIN_DIR = "/Users/sanjyotzade/Documents/datasets/sample_training_images/traini
 VALID_DIR = "/Users/sanjyotzade/Documents/datasets/sample_training_images/testing_data"
 
 # Initializing model parameters
-IMG_HEIGHT = 64  # if None, default input image size as per model will be used
+IMG_WIDTH = None  # if None, default input image width as per model will be used
 
-IMG_WIDTH = 64  # if None, default input image size as per model will be used
+IMG_HEIGHT = None  # if None, default input image height as per model will be used
 
-MODEL_NAME = "vgg16"  # specify the model name from above list
+MODEL_NAME = "mobilenet"  # specify the model name from above list
 
 # if "imagenet" then imagenet trained weight initialization is used for the model.
 # However, in order to re-start training weights path can be specified here.
-WEIGHTS = "imagenet"
+WEIGHTS = None  # ["imagenet", None, <path-to-intermediate-saved-weights>]
 
 SAVE_LOCATION = "./"  # path to folder where model weights and logs will be saved
 
@@ -45,7 +45,7 @@ START_TRAINING = True  # if False, model summary & pre-training parameters will 
 
 POST_EVALUATION = True  # if False, post-training evaluation(elaborated in READ.ME) will be not be done.
 
-TRAINING_TYPE = "freeze_some"
+TRAINING_TYPE = "train_all"
 # There are three modes of training available:
 # ["train_all","freeze_some","freeze_all"]
 """
@@ -61,7 +61,8 @@ Model is created by using architecture from keras application model and adding 2
 3. "freeze_all":
     None of the model layers will be trained. Only added last 2 dense layers will be trained.
 """
-NUMBER_OF_LAYERS_TO_FREEZE = 7  # if TRAINING_TYPE = "freeze_some"
+# Number of initial layers to freeze in an model
+NUMBER_OF_LAYERS_TO_FREEZE = 70  # if TRAINING_TYPE = "freeze_some"
 
 ######################################   Advanced Model Training Parameters   ##########################################
 
@@ -83,9 +84,9 @@ LOSS = "categorical_crossentropy"
 
 # Available optimizers for categorical classification
 #
-# ["sgd", "adam", "adagrad", "adadelta", "rmsprop", "rmsprop", "nadam"]
+# ["sgd", "adam", "adagrad", "adadelta", "rmsprop", "nadam"]
 # Note: default parameters for optimizers will be used
-OPTIMIZER = "adam"
+OPTIMIZER = "rmsprop"
 
 # Number of fully connected layers to add after pre-trained model
 # As many values in NUM_NODES that many fully connected layers will be added after pre-trained model
@@ -95,8 +96,8 @@ NUM_NODES = [1024, 512]  # This default value will add 2 fully connected layers 
 NUM_DROPOUTS = [0.5, 0.5]  # This default value will add 2 dropout layers after each fully connected layer.
 
 # To introduce early stopping
-EARLY_STOPPING = True # if "EARLY_STOPPING = True", below parameters.
-ES_MONITOR = 'val_accuracy'
+EARLY_STOPPING = False  # if "EARLY_STOPPING = True", below parameters.
+ES_MONITOR = 'val_accuracy'  # either of ["val_accuracy", "val_loss"]
 ES_MIN_DELTA = 0
 ES_PATIENCE = 8
 ES_VERBOSE = 1
@@ -118,7 +119,7 @@ ES_RESTORE_BEST_WEIGHTS = True
 SAVING_METRIC = "val_accuracy"  # either of ["val_accuracy", "val_loss"]
 
 # Data Augmentation
-HORIZONTAL_FLIP = True
+HORIZONTAL_FLIP = False
 ROTATION_RANGE = 30
 
 # model training verbose parameters
@@ -130,7 +131,9 @@ VERBOSE = 1  # Integer. 0, 1, or 2. Verbosity mode. 0 = silent, 1 = progress bar
 SHOW = False  # if True, after model training, graph will be displayed
 
 # POST EVALUATION THRESHOLD
-HOW_MANY_WEIGHTS_TO_TEST = 8  # How many best weights are to be evaluated for post-training analysis
+HOW_MANY_WEIGHTS_TO_TEST = 10  # How many best weights are to be evaluated for post-training analysis
+
+# accuracy range (0,1]
 ACCURACY_THRESHOLD = 0.8  # Accuracy above which predictions will be considered correct, for precision-recall calc.
 
 # Not applicable parameter
