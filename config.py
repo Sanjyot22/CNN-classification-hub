@@ -98,8 +98,8 @@ OPTIMIZER = "adam"
 # As many values in NUM_NODES that many fully connected layers will be added after pre-trained model
 # "NUM_DROPOUTS" specifies number of dropouts after each fully connected layers
 # LENGTH OF NUM_NODES should be equal to LENGTH OF NUM_DROPOUTS (i.e dropout values w.r.t to each layer)
-NUM_NODES = [1024, 512]  # if None, default values will be used. Integers should be added.
-NUM_DROPOUTS = [0.5, 0.5]  # if None, default values will be used. Float 0<num<1 should be added.
+NUM_NODES = [1024, 512]  # This default value will add 2 fully connected layers with 1024, 512 nodes respectively.
+NUM_DROPOUTS = [0.5, 0.5]  # This default value will add 2 dropout layers after each fully connected layer.
 
 # To introduce early stopping
 EARLY_STOPPING = True # if "EARLY_STOPPING = True", below parameters.
