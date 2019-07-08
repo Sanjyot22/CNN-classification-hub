@@ -14,7 +14,7 @@ keras_models= ['xception', 'vgg16', 'vgg19', 'resnet50', 'inceptionv3',
 # This is an identifier for training iteration name. This will be used as prefix to model logs folder.
 # If not mentioned name of model logs folder will be same as "model name" used for training.
 # REMEMBER TO CHANGE THIS NAME DURING DIFFERENT MODEL TRAINING ITERATIONS (of the same model).
-ITERATION_NAME = "t"
+ITERATION_NAME = "black_n_white"
 
 # path to training and validation directory
 # path to training directory. Classes wise folders of images
@@ -86,7 +86,7 @@ LOSS = "categorical_crossentropy"
 #
 # ["sgd", "adam", "adagrad", "adadelta", "rmsprop", "nadam"]
 # Note: default parameters for optimizers will be used
-OPTIMIZER = "rmsprop"
+OPTIMIZER = "sgd"
 
 # Number of fully connected layers to add after pre-trained model
 # As many values in NUM_NODES that many fully connected layers will be added after pre-trained model
@@ -119,7 +119,7 @@ ES_RESTORE_BEST_WEIGHTS = True
 SAVING_METRIC = "val_accuracy"  # either of ["val_accuracy", "val_loss"]
 
 # Data Augmentation
-HORIZONTAL_FLIP = False
+HORIZONTAL_FLIP = True
 ROTATION_RANGE = 30
 
 # model training verbose parameters
