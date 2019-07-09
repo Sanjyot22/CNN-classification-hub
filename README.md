@@ -1,12 +1,12 @@
 # CNN classification hub
 
-This project contains 12 different SOTA ready to train CNN architecture's for **image classification**
+This project contains 12 different SOTA ready to train CNN architecture's for **image classification**.
 
 ![CNN classification hub overview](data/cnn-hub-intro.png)
 
 ## How to use CNN classification hub
 
-`CNN classification hub` has three major pre-built model training phases
+`CNN classification hub` has three major pre-built model training phases:
 
 - Model architecture creation
 - Model training on specified architecture
