@@ -8,7 +8,6 @@ This project contains 12 different SOTA ready to train CNN architecture's for **
 
 `CNN classification hub` has three major pre-built model training phases:
 
-
 - Model architecture creation
 - Model training on specified architecture
 - Analyzing best weights from all the saved weights
