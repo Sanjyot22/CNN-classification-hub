@@ -131,7 +131,7 @@ VERBOSE = 1  # Integer. 0, 1, or 2. Verbosity mode. 0 = silent, 1 = progress bar
 SHOW = False  # if True, after model training, graph will be displayed
 
 # POST EVALUATION THRESHOLD
-HOW_MANY_WEIGHTS_TO_TEST = 10  # How many best weights are to be evaluated for post-training analysis
+HOW_MANY_WEIGHTS_TO_TEST = 5  # How many best weights are to be evaluated for post-training analysis
 
 # accuracy range (0,1]
 ACCURACY_THRESHOLD = 0.8  # Accuracy above which predictions will be considered correct, for precision-recall calc.
