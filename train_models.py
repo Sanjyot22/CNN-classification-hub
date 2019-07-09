@@ -31,7 +31,7 @@ class ModelTraining(Models):
     """
 
     def __init__(self, data_dir_train, data_dir_valid, batch_size, epochs, model_name, height,
-                 width, training_type, save_loc, weights, start_train):
+                 width, training_type, save_loc, weights, start_train, post_eval):
         """
         Constructor to define parameters for model training and clear the logs, if specified.
 
@@ -60,6 +60,7 @@ class ModelTraining(Models):
 
         # convert to boolean
         self.START_TRAIN = False if str(start_train) == "False" else True
+        self.POST_EVALUATION = False if str(post_eval) == "False" else True
 
         # check the paths are valid
         if not os.path.exists(self.TRAIN_DIR): print ("\nInvalid training path\n"); sys.exit();
@@ -487,7 +488,7 @@ class ModelTraining(Models):
             print("\nChange 'START_TRAINING=TRUE' to begin training")
 
         logs_folder = os.path.join(self.SAVE_LOC, 'model_repository', self.MODEL_NAME, 'model_logs')
-        if (POST_EVALUATION == True) and (len(os.listdir(logs_folder)) != 0):
+        if (self.POST_EVALUATION == True) and (len(os.listdir(logs_folder)) != 0):
             self.find_best_weights_from_all_epochs(img_height, img_width)
 
         return os.path.join(self.SAVE_LOC, "model_repository", self.MODEL_NAME)

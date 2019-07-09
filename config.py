@@ -61,10 +61,14 @@ Model is created by using architecture from keras application model and adding 2
 3. "freeze_all":
     None of the model layers will be trained. Only added last 2 dense layers will be trained.
 """
-# Number of initial layers to freeze in an model
-NUMBER_OF_LAYERS_TO_FREEZE = 70  # if TRAINING_TYPE = "freeze_some"
+
+#  All the essential parameters can also be passed as run_time argument as mentioned in README
+
 
 ######################################   Advanced Model Training Parameters   ##########################################
+
+# Number of initial layers to freeze in an model
+NUMBER_OF_LAYERS_TO_FREEZE = 70  # if TRAINING_TYPE = "freeze_some"
 
 # Available loss functions for categorical classification
 #

@@ -17,7 +17,10 @@ if __name__ == '__main__':
     optional.add_argument('-b', '--batch_size', default=BATCH_SIZE, type=int, help = 'Batch-size')
     optional.add_argument('-tt', '--training_type', default=TRAINING_TYPE, help="[train_all,freeze_some,freeze_all]")
     optional.add_argument('-w', '--weights', default=WEIGHTS, help='weights imagenet or custom')
-    optional.add_argument('-start', '--start_train', default=START_TRAINING, help='bool referring to start model training')
+    optional.add_argument('-start', '--start_train', default=START_TRAINING,
+                          help='bool referring to start model training')
+    optional.add_argument('-post', '--post_eval', default=POST_EVALUATION,
+                          help='bool referring to start post model evaluation')
 
     args = parser.parse_args()
     # create model training object
@@ -32,6 +35,7 @@ if __name__ == '__main__':
         args.training_type,
         args.save_loc,
         args.weights,
-        args.start_train
+        args.start_train,
+        args.post
     )
     output_string = training_object.train()
