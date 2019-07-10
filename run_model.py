@@ -36,6 +36,6 @@ if __name__ == '__main__':
         args.save_loc,
         args.weights,
         args.start_train,
-        args.post
+        args.post_eval
     )
     output_string = training_object.train()
