@@ -9,7 +9,6 @@ from PIL import Image
 from tqdm import tqdm
 from PIL import ImageOps
 from config import NUMBER_OF_LAYERS_TO_FREEZE
-from pandas_ml import ConfusionMatrix
 from tensorflow.keras.models import load_model
 from create_model_architectures import Models
 warnings.filterwarnings("ignore")
@@ -166,7 +165,11 @@ class DoPredictions(Models):
 
         print ("Overall accuracy is {}%".format(accuracy))
         print ("Precision : {}% Recall : {}% Confidence threshold : {}%".format(precision,recall,accuracy_threshold))
-        print (ConfusionMatrix(annotations,results))
+
+        ytrue = pd.Series(annotations, name='actual')
+        ypred = pd.Series(results, name='predictions')
+        print(pd.crosstab(ytrue, ypred, margins=True))
+
         return accuracy,precision,recall,accuracy_threshold
 
     def do_predictions_while_training(self, input_image_dir_path, weights_file_path, threshold=0):
@@ -234,7 +237,7 @@ class DoPredictions(Models):
         # restructuring prediction, annotation and confidences
         df_result = pd.DataFrame(
             list(zip(image_paths,image_names,image_annotations,image_predictions,image_confidences)),
-            columns=['image_path', 'Image_name', 'Actual_annotation', 'Image_prediction','Image_confidence']
+            columns=['image_path', 'Image_name', 'Actual_annotation', 'Image_prediction', 'Image_confidence']
         )
 
         # cleaning model variables
