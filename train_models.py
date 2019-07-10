@@ -140,7 +140,8 @@ class ModelTraining(Models):
             os.makedirs(model_log_folder)
         else:
             if os.listdir(model_log_folder) and (self.START_TRAIN==True):
-                print("\nDirectory: {},\nis not empty. Delete and restart".format(model_log_folder))
+                print("\nDirectory: {},\nis not empty. Clear folder and restart".format(model_log_folder))
+                print("(hub doesn't support weights overlapping)")
                 print("                  or")
                 print("Change 'ITERATION_NAME' parameter in config.py\n")
                 sys.exit()
@@ -429,11 +430,11 @@ class ModelTraining(Models):
 
             # append to final report
             stats_dict = {
-                "weights_name":weights_name,
-                "accuracy":stats[0],
-                "precision":stats[1],
-                "recall":stats[2],
-                "confidence_threshold":stats[3]
+                "weights_name": weights_name,
+                "accuracy": stats[0],
+                "precision": stats[1],
+                "recall": stats[2],
+                "confidence_threshold": stats[3]
             }
             analysis_df = analysis_df.append(stats_dict, ignore_index=True)
 
