@@ -140,7 +140,7 @@ class ModelTraining(Models):
             os.makedirs(model_log_folder)
         else:
             if os.listdir(model_log_folder) and (self.START_TRAIN==True):
-                print("\nDirectory: {},\n".format(model_log_folder))
+                print("\nDirectory: {};".format(model_log_folder))
                 print("Is not empty. 'Clear' folder and 'restart'(hub doesn't support weights overlapping).")
                 print("                  or")
                 print("Change 'ITERATION_NAME' parameter in config.py\n")
