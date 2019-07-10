@@ -416,14 +416,14 @@ class ModelTraining(Models):
 
         analysis_df = pd.DataFrame([])
         for weight_file_path in weights_to_test:
-            weights_name = weight_file_path.split("/")[-1]
+            weights_name = str(weight_file_path.split("/")[-1])
 
             print("\nweights : {}".format(weights_name))
             print("images folder: {}".format(path_validation_images))
             # doing prediction on a weight
             structured_results, stats = prediction_object.do_predictions_while_training(
                 path_validation_images, weight_file_path, accuracy_threshold)
-            path_to_csv = os.path.join(model_folder, "model_logs", str(weights_name)+".csv")
+            path_to_csv = os.path.join(model_folder, "model_logs", weights_name.replace(".h5", ".csv"))
             structured_results.to_csv(path_to_csv ,index=False)
             print ("Result for weight {} saved to {}\n".format(weights_name, path_to_csv))
 
