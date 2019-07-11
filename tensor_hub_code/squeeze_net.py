@@ -5,7 +5,7 @@ class SqueezeNet:
     """SqueezeNet is a convolution neural network architecture that produces very small models.
     """
 
-    def __init__(self, n_classes, img_height=None, img_width=None, fire_nodes=None, channels=3):
+    def __init__(self, n_classes, img_height=256, img_width=256, fire_nodes=None, channels=3):
         """Class constructor.
 
         Arguments:
