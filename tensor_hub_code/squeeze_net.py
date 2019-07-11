@@ -64,8 +64,8 @@ class SqueezeNet:
         Returns:
             keras-model -- Build squeeze-net model with specified number of  fire modules.
         """
-        MUTIPLE_FRACTION = 0.125
-        fire_nodes = [128, 256, 512, 1024]
+        fraction = 0.125
+        fire_nodes = self.fire_nodes
 
         input_tensor = keras.layers.Input(shape=(self.img_height, self.img_width, self.channels), name="input_layer")
         conv1 = keras.layers.Conv2D(filters=64, kernel_size=(3, 3), strides=(2, 2),
@@ -79,22 +79,21 @@ class SqueezeNet:
         fire_counter = "0"
         for fire_node in fire_nodes[:-1]:
 
-            print (MUTIPLE_FRACTION*fire_node, int(fire_node/2), int(fire_node/2))
             fire_counter = str(int(fire_counter) + 1)
             fire_normal = self.fire_module(name="fire"+fire_counter, fire_input=intermediate_layer,
-                                           fire_nodes=[MUTIPLE_FRACTION*fire_node, int(fire_node/2), int(fire_node/2)],
+                                           fire_nodes=[fraction*fire_node, int(fire_node/2), int(fire_node/2)],
                                            skip_connection=False)
 
             fire_counter = str(int(fire_counter) + 1)
             fire_skip = self.fire_module(name="fire"+fire_counter, fire_input=fire_normal,
-                                         fire_nodes=[MUTIPLE_FRACTION*fire_node, int(fire_node/2), int(fire_node/2)],
+                                         fire_nodes=[fraction*fire_node, int(fire_node/2), int(fire_node/2)],
                                          skip_connection=True)
             fire_pool = keras.layers.MaxPooling2D(pool_size=(3, 3), strides=(2, 2),
                                                   name="fire"+fire_counter+"_fire_pool", padding="same")(fire_skip)
             intermediate_layer = fire_pool
 
         fire_final = self.fire_module(name="fire-final", fire_input=intermediate_layer,
-                                      fire_nodes=[MUTIPLE_FRACTION * fire_nodes[-1], int(fire_nodes[-1] / 2),
+                                      fire_nodes=[fraction * fire_nodes[-1], int(fire_nodes[-1] / 2),
                                                   int(fire_nodes[-1] / 2)],
                                       skip_connection=False)
 
@@ -107,10 +106,9 @@ class SqueezeNet:
         batch2_activated_pooled = keras.layers.AveragePooling2D(pool_size=(x_dim, y_dim), strides=(1, 1),
                                                                 padding="valid", name="final_pool")(batch2_activated)
 
-        final_output = keras.layers.Reshape((self.n_classes,1), name="final_reshape")(batch2_activated_pooled)
-        # final_output = keras.layers.Flatten(name="final_reshape")(batch2_activated_pooled)
+        # final_output = keras.layers.Reshape((self.n_classes,1), name="final_reshape")(batch2_activated_pooled)
+        final_output = keras.layers.Flatten(name="final_reshape")(batch2_activated_pooled)
         model = keras.models.Model(inputs=input_tensor, outputs=final_output)
-        model.summary()
         return model
 
 
