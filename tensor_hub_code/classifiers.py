@@ -26,3 +26,4 @@ from tensor_hub_code.transfer_learning import DenseNet169
 from tensor_hub_code.transfer_learning import DenseNet201
 from tensor_hub_code.transfer_learning import NASNetMobile
 from tensor_hub_code.transfer_learning import NASNetLarge
+from tensor_hub_code.squeeze_net import SqueezeNet
