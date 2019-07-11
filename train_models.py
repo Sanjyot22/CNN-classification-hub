@@ -84,9 +84,9 @@ class ModelTraining(Models):
         self.VALIDATION_SAMPLES = sum([len(files) for r, d, files in os.walk(data_dir_train)])
 
         # list of all the model architecture available in keras applications
-        self.keras_models = [
+        self.model_architectures = [
             'xception', 'vgg16', 'vgg19', 'resnet50', 'inceptionv3', 'inceptionresnetv2', 'nasnet_small','nasnet_large',
-            'densenet121', 'densenet169', 'densenet201', 'mobilenet', 'micro_exp_net'
+            'densenet121', 'densenet169', 'densenet201', 'mobilenet', 'squeezenet'
         ]
 
         # # clears the earlier model training logs
@@ -163,11 +163,11 @@ class ModelTraining(Models):
         """
         # getting the model architecture
 
-        if self.MODEL_NAME_ in self.keras_models:
+        if self.MODEL_NAME_ in self.model_architectures:
             model_final, img_width, img_height = self.create_model_base()
         else:
             print("Please specify the model name from the available list")
-            print(self.keras_models)
+            print(self.model_architectures)
             sys.exit()
 
         # for training to re-start
