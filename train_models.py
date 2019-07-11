@@ -163,7 +163,7 @@ class ModelTraining(Models):
         """
         # getting the model architecture
 
-        if self.MODEL_NAME_ in self.model_architectures:
+        if self.MODEL_NAME_.lower() in self.model_architectures:
             model_final, img_width, img_height = self.create_model_base()
         else:
             print("Please specify the model name from the available list")

@@ -163,7 +163,7 @@ class Models():
             img_width {int} -- input width of the image as per current architecture
         """
         # creating custom model architecture
-        if self.MODELNAME in self.CUSTOM_MODELS:
+        if self.MODELNAME.lower() in self.CUSTOM_MODELS:
             return self.__custom_model_call__()
 
         # creating model architecture
