@@ -1,6 +1,6 @@
 # CNN classification hub
 
-This project contains 12 different SOTA ready to train CNN architecture's for **image classification**.
+This project contains 13 different SOTA ready to train CNN architecture's for **image classification**.
 
 ![CNN classification hub overview](data/cnn-hub-intro.png)
 
@@ -24,7 +24,7 @@ python run_model.py -dtrain <path to train dir> -dvalid <path to test/validation
 ```
 
 other model names:
-**'xception', 'vgg16', 'vgg19', 'resnet50', 'inceptionv3', 'inceptionresnetv2', 'nasnet_small', 'nasnet_large', 'densenet121', 'densenet169', 'densenet201', 'mobilenet'**
+**'xception', 'vgg16', 'vgg19', 'resnet50', 'inceptionv3', 'inceptionresnetv2', 'nasnet_small', 'nasnet_large', 'densenet121', 'densenet169', 'densenet201', 'mobilenet', 'squeezenet'**
 
 
 Note:
@@ -93,7 +93,8 @@ model_repository
 ├── MobileNet
 ├── Densenet121
 ├── Densenet169
-└── Densenet201
+├── Densenet201
+└── SqueezeNet
 
 More architectures coming soon...
 ```
