@@ -15,7 +15,6 @@ from tensor_hub_code.classifiers import NASNetLarge
 from tensor_hub_code.classifiers import NASNetMobile
 from tensor_hub_code.classifiers import InceptionResNetV2
 
-
 class Models():
     """
     Class used to create cnn-architecture available in keras application.
@@ -38,8 +37,34 @@ class Models():
         self.WIDTH = width
         self.TRAINING_TYPE = training_type
         self.NUMBER_OF_CLASSES = num_classes
-        self.CUSTOM_MODELS = ["micro_exp_net"]
+        self.CUSTOM_MODELS = ["squeezenet"]
         self.NUMBER_LAYER_FREEZE = num_freeze_layer
+
+    def __custom_model_call__(self):
+        """
+        This function creates and calls custom model architectures.
+
+        Return:
+            model {keras-model} -- developed custom model architecture in keras.
+        """
+        custom_model_creation_obj = CustomModels()
+
+        # identify the name of the specified model, if exists.
+        if self.MODELNAME.lower() == 'squeezenet':
+            model_call = getattr(custom_model_creation_obj, "squeeze_net")
+            return model_call(n_classes=self.NUMBER_OF_CLASSES, img_width=self.WIDTH, img_height=self.HEIGHT,
+                              fire_nodes=None)
+
+        elif self.MODELNAME.lower() == 'micro_exp_net':
+            model_call = getattr(custom_model_creation_obj, "micro_cnn_net")
+            return model_call(n_classes=self.NUMBER_OF_CLASSES, img_width=self.WIDTH, img_height=self.HEIGHT)
+
+        else:
+            print("Model name '{}' not in the list".format(self.MODELNAME))
+            sys.exit()
+
+
+
 
     def __model_call__(self, model_name):
         """
@@ -119,7 +144,6 @@ class Models():
 
         elif self.MODELNAME.lower() == 'mobilenet':
             model_obj = self.__model_call__(model_name="MobileNet")
-
         else:
             print("Model name '{}' not in the list".format(self.MODELNAME))
             sys.exit()
@@ -138,12 +162,9 @@ class Models():
             img_height {int} -- input height of the image as per current architecture
             img_width {int} -- input width of the image as per current architecture
         """
-
         # creating custom model architecture
         if self.MODELNAME in self.CUSTOM_MODELS:
-            custom_model_creation_obj = CustomModels()
-            model_call = (getattr(custom_model_creation_obj, self.MODELNAME))
-            return model_call(nclasses=self.NUMBER_OF_CLASSES)
+            return self.__custom_model_call__()
 
         # creating model architecture
         # check if the specified model name is valid
