@@ -112,6 +112,3 @@ class SqueezeNet:
         return model
 
 
-if __name__ == "__main__":
-    object = SqueezeNet(2, 256, 256)
-    object.model()
