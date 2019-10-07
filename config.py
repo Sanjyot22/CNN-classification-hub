@@ -14,14 +14,14 @@ keras_models= ['xception', 'vgg16', 'vgg19', 'resnet50', 'inceptionv3',
 # This is an identifier for training iteration name. This will be used as prefix to model logs folder.
 # If not mentioned name of model logs folder will be same as "model name" used for training.
 # REMEMBER TO CHANGE THIS NAME DURING DIFFERENT MODEL TRAINING ITERATIONS (of the same model).
-ITERATION_NAME = "black_n_white"
+ITERATION_NAME = "cats_n_dogs"
 
 # path to training and validation directory
 # path to training directory. Classes wise folders of images
-TRAIN_DIR = "/Users/sanjyotzade/Documents/datasets/sample_training_images/training_data"
+TRAIN_DIR = "/Users/sanjyotzade/Documents/datasets/cats_n_dogs/Train"
 
 # path to validation directory. Classes wise folders of images
-VALID_DIR = "/Users/sanjyotzade/Documents/datasets/sample_training_images/testing_data"
+VALID_DIR = "/Users/sanjyotzade/Documents/datasets/cats_n_dogs/Test"
 
 # Initializing model parameters
 IMG_WIDTH = None  # if None, default input image width as per model will be used
