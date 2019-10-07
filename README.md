@@ -128,5 +128,4 @@ Feel free to open an issue on or send along a pull request.
 If you like the work, show your appreciation by "FORK", "STAR", or "SHARE".
 
 [![Love](https://forthebadge.com/images/badges/built-with-love.svg)](https://github.com/Sanjyot22/CNN-classification-hub)
-
 *Author: [Sanjyot Zade](http://www.sanjyot.info/)*
