@@ -121,5 +121,10 @@ In this phase model compilation is defined. Which include loss function selectio
 In this final phase of the analysis all the weights are analysed against validation/test dataset. Corresponding prediction data is saved in the same folder with the weights. Precision and Recall w.r.t to confidence threshold (change default values as required) are also calculated. 
 
 Note: This post training validation is relevant because the validation accuracy reported during model training is usually calculated with batch normalization. Hence the practical accuracy on image level prediction differs from the validation accuracy calculated during model training. 
+## Support
+
+Feel free to open an issue on or send along a pull request.
+If you like the work, show your appreciation by "FORK", "STAR", or "SHARE".
 
 [![Love](https://forthebadge.com/images/badges/built-with-love.svg)](https://github.com/Sanjyot22/CNN-classification-hub)
+
