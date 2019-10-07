@@ -38,6 +38,7 @@ class DoPredictions(Models):
         self.MODEL_NAME = model_name
         self.TRAINING_TYPE = training_type
         self.NUMBER_OF_CLASSES = nclasses
+        self.IMAGE_FORMATS = ["*.jpg", "*.jpeg", "*.png", "*.JPG", "*.JPEG", "*.PNG", "*.bmp", "*.BMP"]
 
         # kerasModels constructor initialization
         super(DoPredictions, self).__init__(self.MODEL_NAME, self.TRAINING_TYPE, self.NUMBER_OF_CLASSES,
@@ -208,25 +209,27 @@ class DoPredictions(Models):
         image_confidences = []
         image_predictions = []
         print ("Starting prediction on test images...")
-        for image_path in tqdm(glob.glob(input_image_dir_path + '/**/*')):
 
-            # loading an image
-            test_img = self.load_image_file(image_path)
+        for image_ext in self.IMAGE_FORMATS:
+            for image_path in tqdm(glob.glob(input_image_dir_path + '/**/*'+image_ext)):
 
-            # model prediction
-            prediction = model.predict(test_img)
-            prediction = list(prediction[0])
+                # loading an image
+                test_img = self.load_image_file(image_path)
 
-            # saving prediction, annotation and confidences
-            max_index =  prediction.index(max(prediction))
-            labled_pred = labels[max_index]
-            prediction_confidence = max(prediction)
-            actual_annotation = image_path.split("/")[-2]
-            image_names.append(image_path.split("/")[-1])
-            image_paths.append(image_path)
-            image_annotations.append(actual_annotation)
-            image_confidences.append(prediction_confidence)
-            image_predictions.append(labled_pred)
+                # model prediction
+                prediction = model.predict(test_img)
+                prediction = list(prediction[0])
+
+                # saving prediction, annotation and confidences
+                max_index =  prediction.index(max(prediction))
+                labled_pred = labels[max_index]
+                prediction_confidence = max(prediction)
+                actual_annotation = image_path.split("/")[-2]
+                image_names.append(image_path.split("/")[-1])
+                image_paths.append(image_path)
+                image_annotations.append(actual_annotation)
+                image_confidences.append(prediction_confidence)
+                image_predictions.append(labled_pred)
 
         # calculating accuracies
         accuracy, precision, recall, accuracy_threshold = self.calculate_accuracy(image_predictions,

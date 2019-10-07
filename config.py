@@ -21,7 +21,7 @@ ITERATION_NAME = "cats_n_dogs"
 TRAIN_DIR = "/Users/sanjyotzade/Documents/datasets/cats_n_dogs/Train"
 
 # path to validation directory. Classes wise folders of images
-VALID_DIR = "/Users/sanjyotzade/Documents/datasets/cats_n_dogs/Test"
+VALID_DIR = "/Users/sanjyotzade/Documents/datasets/cats_n_dogs/Val"
 
 # Initializing model parameters
 IMG_WIDTH = None  # if None, default input image width as per model will be used
