@@ -15,13 +15,36 @@ This project contains 13 different SOTA ready to train CNN architecture's for **
 Aim is to ease the efforts in training different model architecture for image classification tasks. 
 
 **Steps**
+1. Create an conda environment and install all dependencies using "requirement.txt"/"requirement-gpu.txt".
 
-1. Create train and test/validation folder. Both the folder should contains images present in separate folder as per each category name.
-2. Make the changes to default parameters in "config.py" or run the below command. "config.py" file contains all the model training parameters pre-set for training like model_name_to_train, number of epochs, batch-size etc.
 
-``` 
-python run_model.py -dtrain <path to train dir> -dvalid <path to test/validation dir> -m vgg16 -w "imagenet" -tt train_all 
-```
+2. Create train and test/validation folder. Both the folder should contains images present in separate folder as per each category name.
+
+    **training-validation/test data class-level image folder structure**
+    ```
+    dataset
+    ├── train
+    │   ├── class_1
+    │   |    ├── <images for class_1>
+    │   ├── class_2
+    │   |    ├── <images for class_2>
+    │   ├── class_3
+    │   |    ├── <images for class_3>
+    |   |   
+    │   test
+    │   ├── class_1
+    │   |    ├── <images for class_1>
+    │   ├── class_2
+    │   |    ├── <images for class_2>
+    │   ├── class_3
+    │   |    ├── <images for class_3>
+    ```
+
+3. Make the changes to default parameters in "config.py" or run the below command. "config.py" file contains all the model training parameters pre-set for training like model_name_to_train, number of epochs, batch-size etc.
+
+    ``` 
+    python run_training.py -dtrain <path to train dir> -dvalid <path to test/validation dir> -m vgg16 -w "imagenet" -tt train_all 
+    ```
 
 other model names:
 **'xception', 'vgg16', 'vgg19', 'resnet50', 'inceptionv3', 'inceptionresnetv2', 'nasnet_small', 'nasnet_large', 'densenet121', 'densenet169', 'densenet201', 'mobilenet', 'squeezenet'**
@@ -37,25 +60,7 @@ Note:
 
 (refer "config.py" for further details on more parameters)
 
-**training-validation/test data class-level image folder structure**
-```
-dataset
-├── train
-│   ├── class_1
-│   |    ├── <images for class_1>
-│   ├── class_2
-│   |    ├── <images for class_2>
-│   ├── class_3
-│   |    ├── <images for class_3>
-|   |   
-│   test
-│   ├── class_1
-│   |    ├── <images for class_1>
-│   ├── class_2
-│   |    ├── <images for class_2>
-│   ├── class_3
-│   |    ├── <images for class_3>
-```
+
 
 ## Expected results
 
