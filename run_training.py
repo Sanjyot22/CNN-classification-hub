@@ -1,6 +1,6 @@
 import argparse
 from config import *
-from train_models import ModelTraining
+from model_training import ModelTraining
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Training an Image Classification model')
